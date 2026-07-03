@@ -2,7 +2,7 @@ name: m_utils_example
 description: "Demonstrates how to use the m_utils plugin."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 environment:
   sdk: ^3.11.5
@@ -16,6 +16,38 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  ##############################################################################
+  flutter_localizations:
+    sdk: flutter
+  shared_preferences: ^2.5.5
+  path_provider: ^2.1.6
+  package_info_plus: ^10.1.0
+  device_info_plus: ^13.1.0
+  connectivity_plus: ^7.1.1
+  url_launcher: ^6.3.2
+  share_plus: ^13.1.0
+  go_router: ^17.3.0
+  ##############################################################################
+  permission_handler: ^12.0.3
+  image_picker: ^1.2.2
+  crypto: ^3.0.7
+  encrypt: ^5.0.3
+  path: ^1.9.1
+  dio: ^5.9.2
+  dio_log_plus: ^4.0.4
+  flutter_inappwebview: ^6.1.5
+  easy_debounce: ^2.0.3
+  saver_gallery: 4.1.2
+  signals: 6.3.1
+  cached_network_image: ^3.4.1
+  flutter_keyboard_visibility: ^6.0.0
+  flutter_screenutil: ^5.9.3
+  flutter_smart_dialog: ^5.1.0
+  flutter_zxing: ^2.3.0
+  archive: ^4.0.9
+  shelf: ">=1.0.0 <2.0.0"
+  shelf_static: ">=1.0.0 <2.0.0"
+  ##############################################################################
 
   m_utils:
     # When depending on this package from a real application you should use:
@@ -30,8 +62,6 @@ dependencies:
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
-  integration_test:
-    sdk: flutter
   flutter_test:
     sdk: flutter
 
@@ -47,7 +77,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

@@ -1,39 +1,60 @@
-import 'dart:io' show Platform;
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-void main() {
-  runApp(MaterialApp(home: const MyApp()));
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+
+import 'app.dart';
+import 'app_import.dart';
+
+void main() async {
+  debugPrint('main.dart~running: isProduct-${MUtils.isProduct}');
+  // ignore: unused_local_variable
+  final wfb = WidgetsFlutterBinding.ensureInitialized();
+  // wfb.deferFirstFrame();
+  // wfb.resetFirstFrameSent();
+  await MUtils.init();
+  await _initSystem();
+  await _printDebugMessage();
+  runApp(const App());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
+Future<void> _initSystem() async {
+  ServerManager.init(
+    AppConst.serverList,
+    MUtils.isProduct ? 'prod' : 'dev',
+    () {
+      AppApi().updateBaseUrl(ServerManager.apiHost);
+    },
+  );
+  ThemeStore.init(AppTheme.colorScheme);
+  LanguageStore.init();
+  AppRoutes.setPageLanguage();
+  H5Routes.initOffline(ServerManager.env);
+  if (MUtils.isMobile) {
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    List<DeviceOrientation> devOri = [DeviceOrientation.portraitUp];
+    await SystemChrome.setPreferredOrientations(devOri);
   }
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Plugin example app')),
-      body: Center(
-        child: Column(
-          children: [
-            Text('Running on: ${Platform.version}\n'),
-            Text('Running on: ${Platform.operatingSystem}\n'),
-            Text('Running on: ${Platform.operatingSystemVersion}\n'),
-            Text('Running on: ${Platform.localHostname}\n'),
-            Text('Running on: ${Platform.localeName}\n'),
-          ],
-        ),
-      ),
-    );
+Future<void> _printDebugMessage() async {
+  if (Platform.isAndroid) {
+    await InAppWebViewController.setWebContentsDebuggingEnabled(true);
+  }
+  if (!MUtils.isProduct) {
+    debugPrint('..._printDebugMessage...');
+    debugPrint('tempDir: ${MUtils.tempDir}');
+    debugPrint('docsDir: ${MUtils.docsDir}');
+
+    debugPrint('deviceVersion: ${MUtils.deviceVersion}');
+    debugPrint('brand: ${MUtils.deviceBrand}');
+    debugPrint('model: ${MUtils.deviceModel}');
+
+    debugPrint('appName: ${MUtils.pkgName}');
+    debugPrint('packageName: ${MUtils.pkgId}');
+    debugPrint('buildVersion: ${MUtils.pkgVersion}');
+    debugPrint('buildVersionCode: ${MUtils.pkgVersionCode}');
   }
 }

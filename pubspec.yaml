@@ -1,7 +1,7 @@
 name: m_utils
-description: "A new Flutter project."
+description: "A flutter development mobile utils."
 version: 0.0.1
-homepage:
+homepage: https://github.com/jawa0919/m_utils
 
 environment:
   sdk: ^3.11.5
@@ -10,6 +10,47 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  ##############################################################################
+  flutter_localizations:
+    sdk: flutter
+  shared_preferences: ^2.5.5
+  path_provider: ^2.1.6
+  package_info_plus: ^10.1.0
+  device_info_plus: ^13.1.0
+  connectivity_plus: ^7.1.1
+  url_launcher: ^6.3.2
+  share_plus: ^13.1.0
+  go_router: ^17.3.0
+  ##############################################################################
+  permission_handler: ^12.0.3
+  image_picker: ^1.2.2
+  crypto: ^3.0.7
+  encrypt: ^5.0.3
+  path: ^1.9.1
+  dio: ^5.9.2
+  dio_log_plus: ^4.0.4
+  flutter_inappwebview: ^6.1.5
+  easy_debounce: ^2.0.3
+  saver_gallery: 4.1.2
+  signals: 6.3.1
+  cached_network_image: ^3.4.1
+  flutter_keyboard_visibility: ^6.0.0
+  flutter_screenutil: ^5.9.3
+  flutter_smart_dialog: ^5.1.0
+  flutter_zxing: ^2.3.0
+  archive: ^4.0.9
+  shelf: ">=1.0.0 <2.0.0"
+  shelf_static: ">=1.0.0 <2.0.0"
+  ##############################################################################
+#   ##############################################################################
+#   m_utils:
+#     git:
+#       url: https://github.com/jawa0919/m_utils.git
+#   ##############################################################################
+
+# dependency_overrides:
+#   m_utils:
+#     path: ../m_utils
 
 dev_dependencies:
   flutter_test:
