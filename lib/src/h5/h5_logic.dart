@@ -54,7 +54,7 @@ class H5Logic {
     allowsInlineMediaPlayback: true,
     iframeAllowFullscreen: true,
     upgradeKnownHostsToHTTPS: false,
-    applicationNameForUserAgent: MUtils.pkgUserAgent,
+    applicationNameForUserAgent: MUtils.packageUserAgent,
     // allowsBackForwardNavigationGestures: false,
     // useOnDownloadStart: true,
   );
@@ -67,15 +67,6 @@ class H5Logic {
 
   /// 状态栏是否隐藏
   var isFullScreen = signal(true);
-
-  Map<String, dynamic Function(List<dynamic> arguments)> handlers = {};
-  void setupHandler(
-    String api,
-    dynamic Function(List<dynamic> arguments) callback,
-  ) {
-    handlers[api] = callback;
-    webController?.addJavaScriptHandler(handlerName: api, callback: callback);
-  }
 
   void addHandler() {
     debugPrint('h5_logic.dart~addHandler: ');
@@ -163,10 +154,6 @@ class H5Logic {
     );
   }
 
-  void appTokenChange(String token) {
-    _dispatchCustomEvent('appTokenChange', {'token': token});
-  }
-
   Map<String, dynamic> appScreenInfoChange() {
     var screenInfo = {
       'isDark': ThemeStore.to.isDark.value,
@@ -180,12 +167,12 @@ class H5Logic {
       'viewPaddingBottom': MUtils.viewPaddingBottom,
       'isFullScreen': isFullScreen.value,
     };
-    _dispatchCustomEvent('appScreenInfoChange', screenInfo);
+    postCustomEvent('appScreenInfoChange', screenInfo);
     return screenInfo;
   }
 
   void appKeyboardVisibilityChange(bool visible) {
-    _dispatchCustomEvent('appKeyboardVisibilityChange', {'visible': visible});
+    postCustomEvent('appKeyboardVisibilityChange', {'visible': visible});
   }
 
   ///
@@ -194,7 +181,7 @@ class H5Logic {
   /// [param api] 事件名称
   /// [param detail] 事件详情
   ///
-  /// 监听自定义事件-ts代码
+  /// web端处理发送自定义事件ts代码
   ///
   /// ```ts
   /// window.addEventListener(api, (event: Event) => {
@@ -202,9 +189,30 @@ class H5Logic {
   ///      var detail: Record<string, any> = customEvent.detail;
   /// }, false);
   /// ```
-  void _dispatchCustomEvent(String api, Map<String, dynamic> detail) {
+  void postCustomEvent(String api, Map<String, dynamic> detail) {
     var map = {'detail': detail};
     var script = "window.dispatchEvent(new CustomEvent('$api', $map))";
     webController?.evaluateJavascript(source: script);
+  }
+
+  Map<String, dynamic Function(List<dynamic> arguments)> handlers = {};
+
+  ///
+  /// 监听自定义事件
+  ///
+  /// [param api] 事件名称
+  /// [param callback] 事件回调
+  ///
+  /// web端处理监听自定义事件ts代码
+  ///
+  /// ```ts
+  /// window['flutter_inappwebview']
+  ///     .callHandler(api, ...args).then((result: any) => {
+  ///         console.log('ResultString', JSON.stringify(result));
+  ///     });
+  /// ```
+  void setupHandler(String api, dynamic Function(List<dynamic> args) callback) {
+    handlers[api] = callback;
+    webController?.addJavaScriptHandler(handlerName: api, callback: callback);
   }
 }

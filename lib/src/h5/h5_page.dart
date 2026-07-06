@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -57,8 +59,10 @@ class _H5PageState extends State<H5Page>
         bool webBack = await logic.webController?.canGoBack() ?? false;
         if (webBack) {
           await logic.webController?.goBack();
-        } else {
+        } else if (Navigator.canPop(context)) {
           Navigator.pop(context);
+        } else {
+          exit(0);
         }
       },
       child: Scaffold(
@@ -219,8 +223,12 @@ class _H5PageState extends State<H5Page>
             onTap: () async {
               if (await logic.webController?.canGoBack() == true) {
                 logic.webController?.goBack();
-              } else {
+              } else if (Navigator.canPop(context)) {
                 Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.maybeOf(
+                  context,
+                )?.showSnackBar(SnackBar(content: Text('无法后退')));
               }
             },
           ),

@@ -7,6 +7,7 @@ import 'package:dio_log_plus/dio_log_plus.dart' show showDebugBtn;
 
 import '../../app_import.dart';
 import '../../dto/login_user_resp.dart';
+import '../home/home_page.dart';
 
 mixin LoginLogic<T extends StatefulWidget>
     on SignalsMixin<T>, WidgetsBindingObserver {
@@ -140,15 +141,15 @@ mixin LoginLogic<T extends StatefulWidget>
     trySendCode(phoneCt.text);
   }
 
-  void tryLogin([String? type]) async {
+  void tryLogin([String? val]) async {
     if (loginType.value == 0) {
-      tryLoginPassword(type);
+      tryLoginPassword(val);
     } else {
-      tryLoginCode(type);
+      tryLoginCode(val);
     }
   }
 
-  void tryLoginPassword([String? type]) async {
+  void tryLoginPassword([String? val]) async {
     String username = usernameCt.text.trim();
     String password = passwordCt.text.trim();
     if (username.isEmpty) {
@@ -175,17 +176,11 @@ mixin LoginLogic<T extends StatefulWidget>
       debugPrint('login_logic.dart~117: ${resp.token}');
       await UserStore.to.saveToken(resp.token ?? '', false);
       await UserStore.to.saveProfile(resp);
-      if (type == 'MainPage') {
-        _loginSuccess('MainPage');
-      }
-      if (type == 'DebugPage') {
-        _loginSuccess('DebugPage');
-      }
       _loginSuccess();
     });
   }
 
-  void tryLoginCode([String? mode]) async {
+  void tryLoginCode([String? val]) async {
     String phone = phoneCt.text.trim();
     String code = codeCt.text.trim();
     if (phone.length != 11) {
@@ -209,44 +204,16 @@ mixin LoginLogic<T extends StatefulWidget>
       await ExDialog.dismissLoading();
       if (!r.success) return;
       final resp = LoginUserResp.fromJson(r.data);
-      debugPrint('login_logic.dart~117: ${resp.token}');
+      debugPrint('login_logic.dart~token: ${resp.token}');
       await UserStore.to.saveToken(resp.token ?? '', false);
       await UserStore.to.saveProfile(resp);
-      if (mode == 'MainPage') {
-        _loginSuccess('MainPage');
-      }
-      if (mode == 'DebugPage') {
-        _loginSuccess('DebugPage');
-      }
       _loginSuccess();
     });
   }
 
-  void _loginSuccess([String? url]) async {
-    // if (url == 'MainPage') {
-    //   AppRoutes.clearAllPush(MainPage.routeName);
-    //   return;
-    // }
-    // if (url == 'DebugPage') {
-    //   AppRoutes.clearAllPush(DebugPage.routeName);
-    //   return;
-    // }
-    // // AppRoutes.clearAllPush(H5Page.routeName);
-    // AppDialog.showLoading('正在初始化...');
-    // await H5Routes().waitForInit();
-    // AppDialog.dismissLoading();
-    // AppRoutes.clearAllPush(H5Page.routeName, {
-    //   'url': H5Routes.formateH5Url(H5Routes().offlineUrl, false, true),
-    // });
-    // debugPrint('login_logic.dart~serveDist: ${DateTime.now().str}');
-    // H5Local().serveDist(H5Local().h5DistPath.value).then((url) {
-    //   debugPrint('login_logic.dart~serveDist: ${DateTime.now().str}');
-    //   debugPrint('login_logic.dart~url: $url');
-    //   AppDialog.dismissLoading();
-    //   AppRoutes.clearAllPush(H5Page.routeName, {
-    //     'url': H5Routes.formateH5Url(url, false, true),
-    //   });
-    // });
+  void _loginSuccess([String? val]) async {
+    debugPrint('login_logic.dart~_loginSuccess: $val');
+    AppRoutes.clearAllPush(HomePage.routeName);
   }
 
   void changeLoginType(int type) {
@@ -266,7 +233,6 @@ mixin LoginLogic<T extends StatefulWidget>
   }
   void navDebugPage() {
     SettingView.start(context);
-    // AppRoutes.push(RegisterPage.routeName);
   }
 
   void openPrivacy() {}

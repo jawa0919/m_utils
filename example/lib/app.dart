@@ -16,7 +16,7 @@ class App extends StatelessWidget {
       designSize: const Size(AppConst.designWidth, AppConst.designHeight),
       builder: (context, child) => MaterialApp.router(
         debugShowCheckedModeBanner: !MUtils.isProduct,
-        title: MUtils.pkgName,
+        title: MUtils.packageName,
 
         routerConfig: AppRoutes.routerConfig..observers?.add(ExDialog.observer),
         builder: (context, child) {

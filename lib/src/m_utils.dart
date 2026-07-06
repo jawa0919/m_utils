@@ -38,12 +38,13 @@ class MUtils {
   // 应用信息
   static PackageInfo? _pMap;
   static PackageInfo? get packageInfo => _pMap;
-  static String get pkgName => _pMap?.appName ?? '';
-  static String get pkgId => _pMap?.packageName ?? '';
-  static String get pkgVersion => _pMap?.version ?? '';
-  static String get pkgVersionCode => _pMap?.buildNumber ?? '';
-  static String get pkgSignature => _pMap?.buildSignature ?? '';
-  static String get pkgUserAgent => '$pkgId($pkgVersion;$pkgVersionCode)';
+  static String get packageName => _pMap?.appName ?? '';
+  static String get packageId => _pMap?.packageName ?? '';
+  static String get packageVersion => _pMap?.version ?? '';
+  static String get packageVersionCode => _pMap?.buildNumber ?? '';
+  static String get packageSignature => _pMap?.buildSignature ?? '';
+  static String get packageUserAgent =>
+      '$packageId($packageVersion;$packageVersionCode)';
 
   // 屏幕信息
   static final Map<String, dynamic> _sMap = {};

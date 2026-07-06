@@ -5,6 +5,7 @@ class AppConst {
   // 适合UI的尺寸
   static const designWidth = 1080.0;
   static const designHeight = 2340.0;
+  static final designLandscape = designWidth > designHeight;
   // App Store id
   static const String appStoreId = '';
   // 获取App Store更新信息

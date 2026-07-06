@@ -31,10 +31,13 @@ Future<void> _initSystem() async {
   ThemeStore.init(AppTheme.colorScheme);
   LanguageStore.init();
   AppRoutes.setPageLanguage();
-  H5Routes.initOffline(ServerManager.env);
+  H5Routes.initOffline();
   if (MUtils.isMobile) {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     List<DeviceOrientation> devOri = [DeviceOrientation.portraitUp];
+    if (AppConst.designLandscape) {
+      devOri = [DeviceOrientation.landscapeLeft];
+    }
     await SystemChrome.setPreferredOrientations(devOri);
   }
 }
@@ -52,9 +55,9 @@ Future<void> _printDebugMessage() async {
     debugPrint('brand: ${MUtils.deviceBrand}');
     debugPrint('model: ${MUtils.deviceModel}');
 
-    debugPrint('appName: ${MUtils.pkgName}');
-    debugPrint('packageName: ${MUtils.pkgId}');
-    debugPrint('buildVersion: ${MUtils.pkgVersion}');
-    debugPrint('buildVersionCode: ${MUtils.pkgVersionCode}');
+    debugPrint('packageName: ${MUtils.packageName}');
+    debugPrint('packageId: ${MUtils.packageId}');
+    debugPrint('packageVersion: ${MUtils.packageVersion}');
+    debugPrint('packageVersionCode: ${MUtils.packageVersionCode}');
   }
 }

@@ -29,7 +29,7 @@ class UserStore {
 
   UserStore._internal() {
     debugPrint('user_store.dart~onInit: ');
-    token = MUtils.pref.getString('token') ?? 'mock_token';
+    token = MUtils.pref.getString('token') ?? '';
     final profileJson = MUtils.pref.getString('profile') ?? '{}';
     _profile.value = LoginUserResp.fromJson(jsonDecode(profileJson));
     lastLoginUser.value = MUtils.pref.getString('lastLoginUser') ?? '';
@@ -37,16 +37,13 @@ class UserStore {
       String tips = ListDynamic.val(arguments, 0) ?? '';
       offAndToLoginPage(tips);
     });
-    H5Logic().setupHandler('webUpdateToken', (arguments) async {
-      String newVal = ListDynamic.val(arguments, 0) ?? '';
-      await saveToken(newVal);
-    });
   }
 
   Future<void> saveToken(String val, [bool updateProfile = true]) async {
     if (token != val) {
       await MUtils.pref.setString('token', val);
       token = val;
+      H5Logic().postCustomEvent('appTokenUpdate', {'token': val});
     }
     if (updateProfile) {
       var r = await SimpleResponse.withMock(

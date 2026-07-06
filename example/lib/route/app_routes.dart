@@ -19,10 +19,9 @@ class AppRoutes {
         name: LoginPage.routeName,
         builder: (context, state) => LoginPage(),
         redirect: (context, state) {
-          // if (UserStore.to.hasToken) {
-          //   UserStore.to.saveToken(UserStore.to.token);
-          //   return HomePage.routeName;
-          // }
+          if (UserStore.to.hasToken) {
+            return HomePage.routeName;
+          }
           return null;
         },
       ),
@@ -35,8 +34,15 @@ class AppRoutes {
         path: HomePage.routeName,
         name: HomePage.routeName,
         builder: (context, state) => HomePage(),
-        redirect: (context, state) {
-          //   return H5Page.routeName;
+        redirect: (context, state) async {
+          if (H5Routes.enabled) {
+            if (H5Routes.enabledOffline) {
+              ExDialog.showLoading('正在初始化...');
+              await H5Offline().waitForServerUrl();
+              ExDialog.dismissLoading();
+            }
+            return H5Page.routeName;
+          }
           return null;
         },
       ),
@@ -45,12 +51,17 @@ class AppRoutes {
       //   name: ProfilePage.routeName,
       //   builder: (context, state) => ProfilePage(),
       // ),
-      // GoRoute(
-      //   path: H5Page.routeName,
-      //   name: H5Page.routeName,
-      //   builder: (context, state) =>
-      //       H5Page(url: MapDynamic.val(state.extra, 'url') ?? H5Routes.home),
-      // ),
+      GoRoute(
+        path: H5Page.routeName,
+        name: H5Page.routeName,
+        builder: (context, state) {
+          if (H5Routes.offlineUrl.isNotEmpty) {
+            return H5Page(url: H5Routes.offlineUrl);
+          }
+          String url = MapDynamic.val(state.extra, 'url') ?? H5Routes.home;
+          return H5Page(url: url);
+        },
+      ),
     ],
   );
 

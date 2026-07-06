@@ -6,6 +6,15 @@ import '../dto/app_package_upgrade_resp.dart';
 class H5Routes {
   H5Routes._();
 
+  /// 是否启用H5路由
+  static bool enabled = true;
+
+  /// 是否启用离线路由
+  static bool enabledOffline = true;
+
+  /// 主页面
+  static const String home = '/';
+
   /// 格式化链接
   static String formateUrl(
     String path, [
@@ -13,10 +22,10 @@ class H5Routes {
     bool token = true,
   ]) {
     Uri uri = Uri.parse(path);
-    debugPrint('h5_urls.dart~uri: $uri');
+    debugPrint('h5_routes.dart~uri: $uri');
     if (h5Host) {
       uri = Uri.parse(ServerManager.h5Host + path);
-      debugPrint('h5_urls.dart~h5HostUri: $uri');
+      debugPrint('h5_routes.dart~h5HostUri: $uri');
     }
     if (token) {
       uri = uri.replace(
@@ -27,7 +36,7 @@ class H5Routes {
       );
     }
     String url = uri.toString();
-    debugPrint('h5_urls.dart~formateH5Url: $url');
+    debugPrint('h5_routes.dart~formateH5Url: $url');
     return url;
   }
 
@@ -36,15 +45,16 @@ class H5Routes {
   }
 
   static String offlineUrl = '';
-  static Future<void> initOffline(String mode) async {
-    debugPrint('h5_routes.dart~initOffline: $mode');
+  static Future<void> initOffline() async {
+    debugPrint('h5_routes.dart~initOffline: ');
     final currentVersion = await H5Offline().getCurrentVersion();
     final nextVersion = await H5Offline().getNextVersion();
     SimpleResponse.withMock(
       AppPackageUpgradeResp(
         upgradeFlag: 1,
         version: '1.0.0',
-        storagePath: 'https://example.com/1.0.0.zip',
+        storagePath:
+            'https://github.com/jawa0919/m_utils/raw/refs/heads/main/doc/dist.zip',
       ).toJson(),
       () => CommonApi.loadH5VersionList(),
     ).then((res) async {
@@ -78,6 +88,6 @@ class H5Routes {
     });
 
     /// 每10分钟轮询检查版本
-    await Future.delayed(const Duration(minutes: 10), () => initOffline(mode));
+    await Future.delayed(const Duration(minutes: 10), () => initOffline());
   }
 }

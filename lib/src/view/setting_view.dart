@@ -201,7 +201,7 @@ class _SettingViewState extends State<SettingView> {
                 CupertinoListTile(
                   title: Text('SettingView.检查更新'.tr),
                   additionalInfo: Text(
-                    'v${MUtils.pkgVersion}(${MUtils.pkgVersionCode})',
+                    'v${MUtils.packageVersion}(${MUtils.packageVersionCode})',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   trailing: const Icon(Icons.chevron_right),
