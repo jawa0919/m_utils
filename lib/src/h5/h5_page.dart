@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:signals/signals_flutter.dart';
 
+import '../view/setting_view.dart';
 import 'h5_logic.dart';
 
 class H5Page extends StatefulWidget {
@@ -212,7 +213,10 @@ class _H5PageState extends State<H5Page>
     return Drawer(
       child: ListView(
         children: [
-          TextButton(onPressed: () {}, child: Text('Debug')),
+          TextButton(
+            onPressed: () => SettingView.start(context),
+            child: Text('H5Page'),
+          ),
           ListTile(
             title: Text('URL'),
             subtitle: SelectableText(logic.currentUrl.watch(context)),

@@ -11,13 +11,14 @@ import '../store/theme_store.dart';
 
 class SettingView extends StatefulWidget {
   const SettingView({super.key});
+  static ValueGetter<void>? onLogout;
+  static void setOnLogout(ValueGetter<void>? onLogout) {
+    SettingView.onLogout = onLogout;
+  }
 
   // 启动设置页面
   static void start(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const SettingView()),
-    );
+    Navigator.push(context, MaterialPageRoute(builder: (_) => SettingView()));
   }
 
   // 主题切换对话框
@@ -150,7 +151,6 @@ class _SettingViewState extends State<SettingView> {
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      // 主题切换实现
                       SettingView.showThemeDialog(context);
                     },
                   );
@@ -165,7 +165,6 @@ class _SettingViewState extends State<SettingView> {
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      // 语言切换实现
                       SettingView.showLanguageDialog(context);
                     },
                   );
@@ -229,9 +228,7 @@ class _SettingViewState extends State<SettingView> {
             const SizedBox(height: 32),
 
             TextButton(
-              onPressed: () {
-                // 退出登录实现
-              },
+              onPressed: () => SettingView.onLogout?.call(),
               child: Text(
                 'SettingView.退出登录'.tr,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),

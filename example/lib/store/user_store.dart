@@ -37,6 +37,7 @@ class UserStore {
       String tips = ListDynamic.val(arguments, 0) ?? '';
       offAndToLoginPage(tips);
     });
+    SettingView.setOnLogout(onLogout);
   }
 
   Future<void> saveToken(String val, [bool updateProfile = true]) async {
