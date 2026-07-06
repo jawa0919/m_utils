@@ -14,14 +14,16 @@ class ThemeStore {
   static ColorScheme get color => to._theme.value.colorScheme;
 
   static late ColorScheme _colorScheme;
-  static void init(ColorScheme colorScheme) => _instance._internal(colorScheme);
+  static void init(ColorScheme colorScheme, [bool isDefaultDark = false]) =>
+      _instance._internal(colorScheme, isDefaultDark);
 
-  void _internal(ColorScheme colorScheme) {
+  void _internal(ColorScheme colorScheme, bool isDefaultDark) {
     _colorScheme = colorScheme;
     debugPrint('theme_store.dart~_internal: ');
     _lightThemeIndex.value = MUtils.pref.getInt('_lightThemeIndex') ?? 0;
     _darkThemeIndex.value = MUtils.pref.getInt('_darkThemeIndex') ?? 0;
-    themeModeIndex.value = MUtils.pref.getInt('_themeModeIndex') ?? 1;
+    themeModeIndex.value =
+        MUtils.pref.getInt('_themeModeIndex') ?? (isDefaultDark ? 2 : 1);
   }
 
   static List<ThemeData> get lightList => [

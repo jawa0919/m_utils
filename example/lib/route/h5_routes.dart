@@ -54,7 +54,8 @@ class H5Routes {
         upgradeFlag: 1,
         version: '1.0.0',
         storagePath:
-            'https://github.com/jawa0919/m_utils/raw/refs/heads/main/doc/dist.zip',
+            // 'https://github.com/jawa0919/m_utils/raw/refs/heads/main/doc/dist.zip',
+            'https://fastly.jsdelivr.net/gh/jawa0919/m_utils@main/doc/dist.zip',
       ).toJson(),
       () => CommonApi.loadH5VersionList(),
     ).then((res) async {
