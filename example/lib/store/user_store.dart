@@ -20,11 +20,12 @@ class UserStore {
   late final profile = computed(() => _profile.value);
   late final id = computed(() => _profile.value.id ?? '');
   late final email = computed(() => _profile.value.email ?? '');
+  late final phone = computed(() => _profile.value.phone ?? '');
   late final surname = computed(() => _profile.value.surname ?? '');
   late final name = computed(() => _profile.value.name ?? '');
   late final nickName = computed(() => '${surname.value}${name.value}');
   late final headImage = computed(() => _profile.value.avatar ?? '');
-  late final isSubscribe = computed(() => _profile.value.isSubscribe ?? 0);
+  late final level = computed(() => _profile.value.level ?? 0);
   late final lastLoginUser = signal('');
 
   UserStore._internal() {
@@ -37,7 +38,7 @@ class UserStore {
       String tips = ListDynamic.val(arguments, 0) ?? '';
       offAndToLoginPage(tips);
     });
-    SettingView.setOnLogout(onLogout);
+    SettingView.onAction(SettingAction.logout, onLogout);
   }
 
   Future<void> saveToken(String val, [bool updateProfile = true]) async {

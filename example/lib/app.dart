@@ -13,7 +13,7 @@ class App extends StatelessWidget {
     return ScreenUtilInit(
       minTextAdapt: true,
       splitScreenMode: true,
-      designSize: const Size(AppConst.designWidth, AppConst.designHeight),
+      designSize: const Size(AppStatic.designWidth, AppStatic.designHeight),
       builder: (context, child) => MaterialApp.router(
         debugShowCheckedModeBanner: !MUtils.isProduct,
         title: MUtils.packageName,

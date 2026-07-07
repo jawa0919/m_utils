@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class AppConst {
-  AppConst._();
+class AppStatic {
+  AppStatic._();
   // 适合UI的尺寸
   static const designWidth = 1080.0;
   static const designHeight = 2340.0;
-  static final designLandscape = designWidth > designHeight;
+  static final designLandscape = designWidth < designHeight;
   // App Store id
   static const String appStoreId = '';
   // 获取App Store更新信息
@@ -40,40 +40,9 @@ class AppConst {
     },
     {'env': 'custom', 'apiHost': null, 'h5Host': null},
   ];
-}
-
-class AppTheme {
-  AppTheme._();
 
   /// 主题色
   static const primaryColor = Color(0xFF5856D7);
-
-  /// 次级主题色
-  static const secondaryColor = Color(0xFF8A88E0);
-
-  /// 错误色
-  static const errorColor = Color(0xFFD54941);
-
-  /// 背景色
-  static const surfaceColor = Color(0xFFF3F3F3);
-
-  /// 主字体颜色
-  static const onSurfaceColor = Color.fromRGBO(0, 0, 0, 0.9);
-
-  /// 次级背景色
-  static const surfaceContainerColor = Color(0xFFFFFFFF);
-
-  /// 次级主字体颜色
-  static const onSecondaryContainerColor = Color.fromRGBO(0, 0, 0, 0.6);
-
-  /// 半透明背景色
-  static const scrimColor = Color.fromRGBO(0, 0, 0, 0.26);
-
-  /// 轮廓色
-  static const outlineColor = Color(0xFFC5C5C5);
-
-  /// 轮廓色变体
-  static const outlineVariantColor = Color(0xFFDCDCDC);
 
   /// 真白颜色
   static const trueBlack = Color(0xFF000000);
@@ -88,23 +57,23 @@ class AppTheme {
       .copyWith(
         primary: primaryColor,
 
-        secondary: secondaryColor,
+        secondary: Color(0xFF8A88E0),
 
-        error: errorColor,
+        error: Color(0xFFD54941),
 
-        surface: surfaceColor,
-        onSurface: onSurfaceColor,
+        surface: Color(0xFFF3F3F3),
+        onSurface: Color.fromRGBO(0, 0, 0, 0.9),
 
-        surfaceContainerHighest: surfaceColor,
-        surfaceContainerHigh: surfaceColor,
-        surfaceContainer: surfaceContainerColor,
-        surfaceContainerLow: surfaceContainerColor,
-        surfaceContainerLowest: surfaceContainerColor,
-        onSurfaceVariant: onSecondaryContainerColor,
+        surfaceContainerHighest: Color.fromRGBO(0, 0, 0, 0.9),
+        surfaceContainerHigh: Color.fromRGBO(0, 0, 0, 0.9),
+        surfaceContainer: Color(0xFFFFFFFF),
+        surfaceContainerLow: Color(0xFFFFFFFF),
+        surfaceContainerLowest: Color(0xFFFFFFFF),
+        onSurfaceVariant: Color.fromRGBO(0, 0, 0, 0.6),
 
-        scrim: scrimColor,
+        scrim: Color.fromRGBO(0, 0, 0, 0.26),
 
-        outline: outlineColor,
-        outlineVariant: outlineVariantColor,
+        outline: Color(0xFFC5C5C5),
+        outlineVariant: Color(0xFFDCDCDC),
       );
 }

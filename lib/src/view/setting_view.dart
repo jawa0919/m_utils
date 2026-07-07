@@ -9,19 +9,22 @@ import '../m_utils.dart';
 import '../store/language_store.dart';
 import '../store/theme_store.dart';
 
+enum SettingAction {
+  accountManager,
+  appPermissions,
+  checkUpdate,
+  serviceAgreement,
+  about,
+  logout,
+}
+
 class SettingView extends StatefulWidget {
   const SettingView({super.key});
-  static ValueGetter<void>? onLogout;
-  static void setOnLogout(ValueGetter<void>? onLogout) {
-    SettingView.onLogout = onLogout;
-  }
 
-  // 启动设置页面
   static void start(BuildContext context) {
     Navigator.push(context, MaterialPageRoute(builder: (_) => SettingView()));
   }
 
-  // 主题切换对话框
   static void showThemeDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -65,7 +68,6 @@ class SettingView extends StatefulWidget {
     );
   }
 
-  // 语言切换对话框
   static void showLanguageDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -101,6 +103,16 @@ class SettingView extends StatefulWidget {
         );
       },
     );
+  }
+
+  static final _callbacks = <SettingAction, ValueGetter<void>?>{};
+
+  static void onAction(SettingAction action, ValueGetter<void>? callback) {
+    _callbacks[action] = callback;
+  }
+
+  static void _invoke(SettingAction action) {
+    _callbacks[action]?.call();
   }
 
   @override
@@ -179,16 +191,14 @@ class _SettingViewState extends State<SettingView> {
                 CupertinoListTile(
                   title: Text('SettingView.账号管理'.tr),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // 账号管理实现
-                  },
+                  onTap: () =>
+                      SettingView._invoke(SettingAction.accountManager),
                 ),
                 CupertinoListTile(
                   title: Text('SettingView.应用权限'.tr),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // 应用权限实现
-                  },
+                  onTap: () =>
+                      SettingView._invoke(SettingAction.appPermissions),
                 ),
               ],
             ),
@@ -204,23 +214,18 @@ class _SettingViewState extends State<SettingView> {
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // 检查更新实现
-                  },
+                  onTap: () => SettingView._invoke(SettingAction.checkUpdate),
                 ),
                 CupertinoListTile(
                   title: Text('SettingView.服务协议'.tr),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // 服务协议实现
-                  },
+                  onTap: () =>
+                      SettingView._invoke(SettingAction.serviceAgreement),
                 ),
                 CupertinoListTile(
                   title: Text('SettingView.关于'.tr),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // 关于实现
-                  },
+                  onTap: () => SettingView._invoke(SettingAction.about),
                 ),
               ],
             ),
@@ -228,7 +233,7 @@ class _SettingViewState extends State<SettingView> {
             const SizedBox(height: 32),
 
             TextButton(
-              onPressed: () => SettingView.onLogout?.call(),
+              onPressed: () => SettingView._invoke(SettingAction.logout),
               child: Text(
                 'SettingView.退出登录'.tr,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -316,106 +321,6 @@ extension SettingViewLanguage on SettingView {
       'SettingView.关于': 'About',
 
       'SettingView.退出登录': 'Logout',
-    },
-    const Locale('es', 'ES'): {
-      'SettingView.设置': 'Ajustes',
-
-      'SettingView.系统设置': 'Configuración del sistema',
-      'SettingView.主题模式': 'Modo de tema',
-      'SettingView.跟随系统': 'Seguir al sistema',
-      'SettingView.浅色主题': 'Tema claro',
-      'SettingView.深色主题': 'Tema oscuro',
-      'SettingView.选择主题': 'Seleccionar tema',
-      'SettingView.语言': 'Idioma',
-      'SettingView.选择语言': 'Seleccionar idioma',
-
-      'SettingView.账户设置': 'Configuración de la cuenta',
-      'SettingView.账号管理': 'Gestión de cuentas',
-      'SettingView.应用权限': 'Permisos de la aplicación',
-
-      'SettingView.关于应用': 'Acerca de la aplicación',
-      'SettingView.检查更新': 'Buscar actualizaciones',
-      'SettingView.正在检查更新': 'Buscando actualizaciones...',
-      'SettingView.已经是最新版本了': 'Ya está en la última versión',
-      'SettingView.服务协议': 'Términos de servicio',
-      'SettingView.关于': 'Acerca de',
-
-      'SettingView.退出登录': 'Cerrar sesión',
-    },
-    const Locale('pt', 'PT'): {
-      'SettingView.设置': 'Definições',
-
-      'SettingView.系统设置': 'Definições do sistema',
-      'SettingView.主题模式': 'Modo de tema',
-      'SettingView.跟随系统': 'Seguir o sistema',
-      'SettingView.浅色主题': 'Tema claro',
-      'SettingView.深色主题': 'Tema escuro',
-      'SettingView.选择主题': 'Selecionar tema',
-      'SettingView.语言': 'Idioma',
-      'SettingView.选择语言': 'Selecionar idioma',
-
-      'SettingView.账户设置': 'Definições da conta',
-      'SettingView.账号管理': 'Gestão de contas',
-      'SettingView.应用权限': 'Permissões da aplicação',
-
-      'SettingView.关于应用': 'Sobre a aplicação',
-      'SettingView.检查更新': 'Verificar atualizações',
-      'SettingView.正在检查更新': 'A verificar atualizações...',
-      'SettingView.已经是最新版本了': 'Já está na versão mais recente',
-      'SettingView.服务协议': 'Termos de serviço',
-      'SettingView.关于': 'Sobre',
-
-      'SettingView.退出登录': 'Terminar sessão',
-    },
-    const Locale('ja', 'JP'): {
-      'SettingView.设置': '設定',
-
-      'SettingView.系统设置': 'システム設定',
-      'SettingView.主题模式': 'テーマモード',
-      'SettingView.跟随系统': 'システムに従う',
-      'SettingView.浅色主题': 'ライトテーマ',
-      'SettingView.深色主题': 'ダークテーマ',
-      'SettingView.选择主题': 'テーマを選択',
-      'SettingView.语言': '言語',
-      'SettingView.选择语言': '言語を選択',
-
-      'SettingView.账户设置': 'アカウント設定',
-      'SettingView.账号管理': 'アカウント管理',
-      'SettingView.应用权限': 'アプリ権限',
-
-      'SettingView.关于应用': 'アプリについて',
-      'SettingView.检查更新': '更新を確認',
-      'SettingView.正在检查更新': '更新を確認中',
-      'SettingView.已经是最新版本了': '最新バージョンです',
-      'SettingView.服务协议': 'サービス契約',
-      'SettingView.关于': 'について',
-
-      'SettingView.退出登录': 'ログアウト',
-    },
-    const Locale('ko', 'KR'): {
-      'SettingView.设置': '설정',
-
-      'SettingView.系统设置': '시스템 설정',
-      'SettingView.主题模式': '테마 모드',
-      'SettingView.跟随系统': '시스템 따라가기',
-      'SettingView.浅色主题': '라이트 테마',
-      'SettingView.深色主题': '다크 테마',
-      'SettingView.选择主题': '테마 선택',
-      'SettingView.语言': '언어',
-      'SettingView.选择语言': '언어 선택',
-
-      'SettingView.账户设置': '계정 설정',
-      'SettingView.账号管理': '계정 관리',
-      'SettingView.应用权限': '앱 권한',
-
-      'SettingView.关于应用': '앱 정보',
-      'SettingView.检查更新': '업데이트 확인',
-      'SettingView.正在检查更新': '업데이트 확인 중',
-      'SettingView.已经是最新版本了': '최신 버전입니다',
-      'SettingView.服务协议': '서비스 약관',
-      'SettingView.关于': '정보',
-
-      'SettingView.退出登录': '로그아웃',
     },
   };
 }

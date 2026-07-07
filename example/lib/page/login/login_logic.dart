@@ -199,7 +199,7 @@ mixin LoginLogic<T extends StatefulWidget>
     ExDialog.showLoading('正在登录');
     SimpleResponse.withMock(
       LoginUserResp(token: 'loginPhoneCode123456').toJson(),
-      () => UserApi.loginPhoneCode(phone, code),
+      () => UserApi.loginCode(phone, code),
     ).then((r) async {
       await ExDialog.dismissLoading();
       if (!r.success) return;

@@ -22,20 +22,20 @@ void main() async {
 
 Future<void> _initSystem() async {
   ServerManager.init(
-    AppConst.serverList,
+    AppStatic.serverList,
     MUtils.isProduct ? 'prod' : 'dev',
     () {
       AppApi().updateBaseUrl(ServerManager.apiHost);
     },
   );
-  ThemeStore.init(AppTheme.colorScheme);
+  ThemeStore.init(AppStatic.colorScheme);
   LanguageStore.init();
   AppRoutes.setPageLanguage();
   H5Routes.initOffline();
   if (MUtils.isMobile) {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     List<DeviceOrientation> devOri = [DeviceOrientation.portraitUp];
-    if (AppConst.designLandscape) {
+    if (AppStatic.designLandscape) {
       devOri = [DeviceOrientation.landscapeLeft];
     }
     await SystemChrome.setPreferredOrientations(devOri);

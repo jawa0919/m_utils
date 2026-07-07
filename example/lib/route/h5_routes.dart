@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import '../app_import.dart';
-import '../dto/app_package_upgrade_resp.dart';
+import '../dto/app_version_resp.dart';
 
 class H5Routes {
   H5Routes._();
@@ -50,18 +50,18 @@ class H5Routes {
     final currentVersion = await H5Offline().getCurrentVersion();
     final nextVersion = await H5Offline().getNextVersion();
     SimpleResponse.withMock(
-      AppPackageUpgradeResp(
+      AppVersionResp(
         upgradeFlag: 1,
         version: '1.0.0',
         storagePath:
             // 'https://github.com/jawa0919/m_utils/raw/refs/heads/main/doc/dist.zip',
             'https://fastly.jsdelivr.net/gh/jawa0919/m_utils@main/doc/dist.zip',
       ).toJson(),
-      () => CommonApi.loadH5VersionList(),
+      () => CommonApi.findH5Version(),
     ).then((res) async {
-      debugPrint('h5_routes.dart~loadH5VersionList: ${DateTime.now().str}');
+      debugPrint('h5_routes.dart~findH5Version: ${DateTime.now().str}');
       if (!res.success) return;
-      final r = AppPackageUpgradeResp.fromJson(res.data);
+      final r = AppVersionResp.fromJson(res.data);
       if (r.upgradeFlag != 1) return;
       final remoteVersion = r.version ?? '0.0.1';
       if (remoteVersion == currentVersion) {

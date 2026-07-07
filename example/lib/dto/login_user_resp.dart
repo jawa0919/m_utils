@@ -1,71 +1,68 @@
 class LoginUserResp {
   final String? id;
-  final String? email;
-  final String? nickname;
+  final String? account;
+  final String? password;
+  final String? phone;
   final String? surname;
   final String? name;
+  final String? nickname;
   final String? avatar;
-  final int? isSubscribe;
-  final String? subscribeExpireTime;
+  final String? email;
+  final int? level;
   final String? lastLogin;
   final String? lastLoginIp;
-  final String? createTime;
-  final String? updateTime;
   final String? token;
 
   const LoginUserResp({
     this.id,
-    this.email,
-    this.nickname,
+    this.account,
+    this.password,
+    this.phone,
     this.surname,
     this.name,
+    this.nickname,
     this.avatar,
-    this.isSubscribe,
-    this.subscribeExpireTime,
+    this.email,
+    this.level,
     this.lastLogin,
     this.lastLoginIp,
-    this.createTime,
-    this.updateTime,
     this.token,
   });
 
   factory LoginUserResp.fromJson(Map<String, dynamic> json) => LoginUserResp(
     id: json['id'],
-    email: json['email'],
-    nickname: json['nickname'],
+    account: json['account'],
+    password: json['password'],
+    phone: json['phone'],
     surname: json['surname'],
     name: json['name'],
+    nickname: json['nickname'],
     avatar: json['avatar'],
-    isSubscribe: json['isSubscribe'],
-    subscribeExpireTime: json['subscribeExpireTime'],
+    email: json['email'],
+    level: json['level'],
     lastLogin: json['lastLogin'],
     lastLoginIp: json['lastLoginIp'],
-    createTime: json['createTime'],
-    updateTime: json['updateTime'],
     token: json['token'],
   );
 
   Map<String, dynamic> toJson() => {
     'id': id,
-
-    'email': email,
-    'nickname': nickname,
+    'account': account,
+    'password': password,
+    'phone': phone,
     'surname': surname,
     'name': name,
+    'nickname': nickname,
     'avatar': avatar,
-
-    'isSubscribe': isSubscribe,
-    'subscribeExpireTime': subscribeExpireTime,
-
+    'email': email,
+    'level': level,
     'lastLogin': lastLogin,
     'lastLoginIp': lastLoginIp,
-    'createTime': createTime,
-    'updateTime': updateTime,
     'token': token,
   };
 
   @override
   String toString() {
-    return 'LoginUserResp{id: $id, email: $email, nickname: $nickname, surname: $surname, name: $name, avatar: $avatar, subscribeExpireTime: $subscribeExpireTime, lastLogin: $lastLogin, lastLoginIp: $lastLoginIp, createTime: $createTime, updateTime: $updateTime, token: $token}';
+    return 'LoginUserResp{id: $id, account: $account, password: $password, phone: $phone, surname: $surname, name: $name, nickname: $nickname, avatar: $avatar, email: $email, level: $level, lastLogin: $lastLogin, lastLoginIp: $lastLoginIp, token: $token}';
   }
 }
