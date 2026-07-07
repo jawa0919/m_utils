@@ -87,7 +87,7 @@ class H5Offline {
   Future<String> _readVersionFile(String dirPath) async {
     final file = File(p.join(dirPath, '.version'));
     if (file.existsSync()) return file.readAsStringSync();
-    return '';
+    return '0.0.0';
   }
 
   Future<void> _writeVersionFile(String dirPath, String version) async {

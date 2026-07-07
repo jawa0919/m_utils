@@ -5,7 +5,7 @@ class AppStatic {
   // 适合UI的尺寸
   static const designWidth = 1080.0;
   static const designHeight = 2340.0;
-  static final designLandscape = designWidth < designHeight;
+  static final designLandscape = designWidth > designHeight;
   // App Store id
   static const String appStoreId = '';
   // 获取App Store更新信息
@@ -42,7 +42,7 @@ class AppStatic {
   ];
 
   /// 主题色
-  static const primaryColor = Color(0xFF5856D7);
+  static const primaryColor = Color(0xFF0ea5e9);
 
   /// 真白颜色
   static const trueBlack = Color(0xFF000000);
@@ -55,25 +55,24 @@ class AppStatic {
 
   static final colorScheme = ColorScheme.fromSeed(seedColor: primaryColor)
       .copyWith(
-        primary: primaryColor,
+        // primary: primary,
+        // onPrimary: onPrimary,
+        // secondary: secondary,
+        // onSecondary: onSecondary,
+        // error: error,
+        // onError: onError,
+        // surface: surface,
+        // onSurface: onSurface,
+        // surfaceContainerHighest: Color.fromRGBO(0, 0, 0, 0.9),
+        // surfaceContainerHigh: Color.fromRGBO(0, 0, 0, 0.9),
+        // surfaceContainer: Color(0xFFFFFFFF),
+        // surfaceContainerLow: Color(0xFFFFFFFF),
+        // surfaceContainerLowest: Color(0xFFFFFFFF),
+        // onSurfaceVariant: Color.fromRGBO(0, 0, 0, 0.6),
 
-        secondary: Color(0xFF8A88E0),
-
-        error: Color(0xFFD54941),
-
-        surface: Color(0xFFF3F3F3),
-        onSurface: Color.fromRGBO(0, 0, 0, 0.9),
-
-        surfaceContainerHighest: Color.fromRGBO(0, 0, 0, 0.9),
-        surfaceContainerHigh: Color.fromRGBO(0, 0, 0, 0.9),
-        surfaceContainer: Color(0xFFFFFFFF),
-        surfaceContainerLow: Color(0xFFFFFFFF),
-        surfaceContainerLowest: Color(0xFFFFFFFF),
-        onSurfaceVariant: Color.fromRGBO(0, 0, 0, 0.6),
-
-        scrim: Color.fromRGBO(0, 0, 0, 0.26),
-
-        outline: Color(0xFFC5C5C5),
-        outlineVariant: Color(0xFFDCDCDC),
+        // outline: Color(0xFFC5C5C5),
+        // outlineVariant: Color(0xFFDCDCDC),
+        // shadow: Color(0xFFDCDCDC),
+        // scrim: Color.fromRGBO(0, 0, 0, 0.26),
       );
 }

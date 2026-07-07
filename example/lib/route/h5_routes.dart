@@ -55,7 +55,8 @@ class H5Routes {
         version: '1.0.0',
         storagePath:
             // 'https://github.com/jawa0919/m_utils/raw/refs/heads/main/doc/dist.zip',
-            'https://fastly.jsdelivr.net/gh/jawa0919/m_utils@main/doc/dist.zip',
+            'https://ghfast.top/https://raw.githubusercontent.com/jawa0919/m_utils/main/doc/dist.zip',
+        // 'https://fastly.jsdelivr.net/gh/jawa0919/m_utils@main/doc/dist.zip',
       ).toJson(),
       () => CommonApi.findH5Version(),
     ).then((res) async {
