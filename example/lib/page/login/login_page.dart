@@ -288,7 +288,7 @@ class _LoginPageState extends State<LoginPage>
               maxLines: 1,
               obscureText: passwordObscure.value,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9-_.]')),
                 // LengthLimitingTextInputFormatter(6),
               ],
               textInputAction: TextInputAction.go,

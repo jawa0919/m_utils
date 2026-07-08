@@ -15,13 +15,13 @@ import 'package:shelf_static/shelf_static.dart';
 /// - 启动时若有 next，则自动替换 current
 /// - 升级仅解压到 next，需手动调用 restartServer 或 startServer 应用
 class H5Offline {
-  static final Map<int, H5Offline> _cache = <int, H5Offline>{};
-  factory H5Offline([int port = 24399]) {
-    return _cache.putIfAbsent(port, () => H5Offline._internal(port));
+  static final Map<String, H5Offline> _cache = <String, H5Offline>{};
+  factory H5Offline([String name = 'defaultName']) {
+    return _cache.putIfAbsent(name, () => H5Offline._internal(name));
   }
-  H5Offline._internal(this.port);
+  H5Offline._internal(this.name);
 
-  final int port;
+  final String name;
   String _homePath = '';
   String _currentVersion = '';
   HttpServer? _server;
@@ -29,7 +29,7 @@ class H5Offline {
   Future<void> _initPath() async {
     if (_homePath.isNotEmpty) return;
     final sDir = await getApplicationSupportDirectory();
-    _homePath = p.join(sDir.path, 'h5_offline_$port');
+    _homePath = p.join(sDir.path, 'h5_offline_$name');
     await Directory(_homePath).create(recursive: true);
   }
 
@@ -222,7 +222,7 @@ class H5Offline {
       if (response.statusCode == 404) return Response.found('/');
       return response;
     });
-    _server = await serve(handler, InternetAddress.anyIPv4, port);
+    _server = await serve(handler, InternetAddress.anyIPv4, 0);
     serverUrl.value = 'http://${_server?.address.host}:${_server?.port}';
     debugPrint('h5_offline.dart~serverUrl: ${serverUrl.value}');
     return serverUrl.value;

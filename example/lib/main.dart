@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
@@ -34,6 +34,7 @@ Future<void> _initSystem() async {
   H5Routes.initOffline();
   if (MUtils.isMobile) {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    // await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     List<DeviceOrientation> devOri = [DeviceOrientation.portraitUp];
     if (AppStatic.designLandscape) {
       devOri = [DeviceOrientation.landscapeLeft];
