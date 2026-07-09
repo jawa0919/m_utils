@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
+
 import '../app_import.dart';
 import '../dto/app_version_resp.dart';
 
@@ -46,9 +48,22 @@ class H5Routes {
 
   static String offlineUrl = '';
   static Future<void> initOffline() async {
-    debugPrint('h5_routes.dart~initOffline: ');
-    final currentVersion = await H5Offline().getCurrentVersion();
-    final nextVersion = await H5Offline().getNextVersion();
+    debugPrint('h5_routes.dart~initOffline: ${DateTime.now().str}');
+    H5Offline().startServer().then((value) {
+      if (value.isEmpty) {
+        _checkVersion(() async {
+          offlineUrl = await H5Offline().startServer();
+          debugPrint('h5_routes.dart~initOffline: $offlineUrl');
+        });
+        return;
+      }
+      offlineUrl = value;
+      debugPrint('h5_routes.dart~initOffline: $offlineUrl');
+    });
+  }
+
+  static Future<void> _checkVersion([ValueGetter? callback]) async {
+    debugPrint('h5_routes.dart~checkVersion: ${DateTime.now().str}');
     SimpleResponse.withMock(
       AppVersionResp(
         upgradeFlag: 1,
@@ -64,14 +79,15 @@ class H5Routes {
       if (!res.success) return;
       final r = AppVersionResp.fromJson(res.data);
       if (r.upgradeFlag != 1) return;
+      final currentVersion = await H5Offline().getCurrentVersion();
+      final nextVersion = await H5Offline().getNextVersion();
       final remoteVersion = r.version ?? '0.0.1';
       if (remoteVersion == currentVersion) {
-        debugPrint('h5_routes.dart~ ==: ${DateTime.now().str}');
-        offlineUrl = await H5Offline().startServer();
+        /// 当前版本
       } else if (remoteVersion == nextVersion) {
-        offlineUrl = await H5Offline().startServer();
+        /// 下一个版本, 无需下载
       } else if (versionInt(remoteVersion) > versionInt(currentVersion)) {
-        debugPrint('h5_routes.dart~ >: ${DateTime.now().str}');
+        debugPrint('h5_routes.dart~remoteVersion: $remoteVersion');
         final versionDirectory = Directory.systemTemp;
         final fileName = r.storagePath?.split('/').last;
         final zipFile = File('${versionDirectory.path}/$fileName');
@@ -79,17 +95,13 @@ class H5Routes {
         HttpUtil.downloadFile(r.storagePath!, zipFile.path).then((dRes) async {
           debugPrint('h5_routes.dart~downloadFile: ${DateTime.now().str}');
           await H5Offline().releaseNextDist(zipFile.path, r.version!);
-          if (!H5Offline().isRunning()) {
-            offlineUrl = await H5Offline().startServer();
-          }
+          debugPrint('h5_routes.dart~releaseNextDist: ${DateTime.now().str}');
+          callback?.call();
         });
-      } else {
-        offlineUrl = await H5Offline().startServer();
-        debugPrint('h5_routes.dart~<: ${DateTime.now().str}');
       }
     });
 
     /// 每10分钟轮询检查版本
-    await Future.delayed(const Duration(minutes: 10), () => initOffline());
+    await Future.delayed(const Duration(minutes: 10), () => _checkVersion());
   }
 }

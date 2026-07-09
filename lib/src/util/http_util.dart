@@ -210,6 +210,17 @@ class HttpUtil {
 }
 
 class SimpleException implements Exception {
+  static const int connectionTimeoutCode = 0x0100;
+  static const int sendTimeoutCode = 0x0101;
+  static const int receiveTimeoutCode = 0x0102;
+  static const int badCertificateCode = 0x0103;
+  static const int badResponseCode = 0x0104;
+  static const int cancelCode = 0x0105;
+  static const int connectionErrorCode = 0x0106;
+  static const int unknownCode = 0x0107;
+  static const int transformTimeoutCode = 0x0108;
+
+  static const int noneNetworkCode = 0x0200;
   final int code;
   final String message;
   SimpleException({required this.code, required this.message});
@@ -226,13 +237,25 @@ extension ExDioException on DioException {
   SimpleException get simpleException {
     switch (type) {
       case DioExceptionType.connectionTimeout:
-        return SimpleException(code: -1, message: 'HttpUtil.连接超时'.tr);
+        return SimpleException(
+          code: SimpleException.connectionTimeoutCode,
+          message: 'HttpUtil.连接超时'.tr,
+        );
       case DioExceptionType.sendTimeout:
-        return SimpleException(code: -1, message: 'HttpUtil.请求超时'.tr);
+        return SimpleException(
+          code: SimpleException.sendTimeoutCode,
+          message: 'HttpUtil.请求超时'.tr,
+        );
       case DioExceptionType.receiveTimeout:
-        return SimpleException(code: -1, message: 'HttpUtil.响应超时'.tr);
+        return SimpleException(
+          code: SimpleException.receiveTimeoutCode,
+          message: 'HttpUtil.响应超时'.tr,
+        );
       case DioExceptionType.badCertificate:
-        return SimpleException(code: -1, message: 'HttpUtil.证书错误');
+        return SimpleException(
+          code: SimpleException.badCertificateCode,
+          message: 'HttpUtil.证书错误',
+        );
       case DioExceptionType.badResponse:
         int statusCode = response?.statusCode ?? -1;
         switch (statusCode) {
@@ -251,17 +274,32 @@ extension ExDioException on DioException {
           case 503:
             return SimpleException(code: 503, message: 'HttpUtil.服务不可用'.tr);
           default:
-            return SimpleException(code: -1, message: 'HttpUtil.未知错误'.tr);
+            return SimpleException(
+              code: SimpleException.badResponseCode,
+              message: '${'HttpUtil.服务错误'.tr} $statusCode',
+            );
         }
       case DioExceptionType.cancel:
-        return SimpleException(code: -1, message: 'HttpUtil.请求取消'.tr);
+        return SimpleException(
+          code: SimpleException.cancelCode,
+          message: 'HttpUtil.请求取消'.tr,
+        );
       case DioExceptionType.connectionError:
         if (HttpUtil.isNoneNetwork) {
-          return SimpleException(code: -1, message: 'HttpUtil.无网络连接'.tr);
+          return SimpleException(
+            code: SimpleException.noneNetworkCode,
+            message: 'HttpUtil.无网络连接'.tr,
+          );
         }
-        return SimpleException(code: -1, message: 'HttpUtil.无法连接到服务器'.tr);
+        return SimpleException(
+          code: SimpleException.connectionErrorCode,
+          message: 'HttpUtil.无法连接到服务器'.tr,
+        );
       default:
-        return SimpleException(code: -1, message: 'HttpUtil.未知错误'.tr);
+        return SimpleException(
+          code: SimpleException.unknownCode,
+          message: 'HttpUtil.未知错误'.tr,
+        );
     }
   }
 }
@@ -280,10 +318,11 @@ extension HttpUtilLanguage on HttpUtil {
       'HttpUtil.方法不存在': '方法不存在',
       'HttpUtil.服务器错误': '服务器错误',
       'HttpUtil.服务不可用': '服务不可用',
-      'HttpUtil.未知错误': '未知错误',
+      'HttpUtil.服务错误': '服务错误',
       'HttpUtil.请求取消': '请求取消',
       'HttpUtil.无网络连接': '无网络连接',
       'HttpUtil.无法连接到服务器': '无法连接到服务器',
+      'HttpUtil.未知错误': '未知错误',
     },
     const Locale('en', 'US'): {
       'HttpUtil.连接超时': 'Connection Timeout',
@@ -297,10 +336,11 @@ extension HttpUtilLanguage on HttpUtil {
       'HttpUtil.方法不存在': 'Method Not Allowed',
       'HttpUtil.服务器错误': 'Internal Error',
       'HttpUtil.服务不可用': 'Service Unavailable',
-      'HttpUtil.未知错误': 'Unknown Error',
+      'HttpUtil.服务错误': 'Service Error',
       'HttpUtil.请求取消': 'Request Canceled',
       'HttpUtil.无网络连接': 'No Network Connection',
       'HttpUtil.无法连接到服务器': 'Failed to Connect to Server',
+      'HttpUtil.未知错误': 'Unknown Error',
     },
   };
 }

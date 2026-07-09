@@ -80,7 +80,7 @@ class H5Offline {
       }
       return;
     } else {
-      throw Exception('Invalid zip file. Please check the format.');
+      // throw Exception('zip包中没有index.html文件');
     }
   }
 
@@ -129,10 +129,12 @@ class H5Offline {
     await _applyUpdateIfNeeded();
     final currentDir = Directory(p.join(_homePath, 'current'));
     if (!await currentDir.exists()) {
-      throw Exception('No H5 deployment found. Please update first.');
+      // throw Exception('current目录不存在');
+      return '';
     }
-    await stopServer();
-    return await serveDist(currentDir.path);
+    _server = await _serveDist(currentDir.path);
+    serverUrl.value = 'http://${_server?.address.host}:${_server?.port}';
+    return serverUrl.value;
   }
 
   Future<void> _applyUpdateIfNeeded() async {
@@ -158,11 +160,11 @@ class H5Offline {
     await nextDir.create(recursive: true);
     await _extractZip(zipPath, nextDir.path);
 
-    final indexFile = File(p.join(nextDir.path, 'index.html'));
-    if (!await indexFile.exists()) {
-      await nextDir.delete(recursive: true);
-      throw Exception('ZIP does not contain index.html');
-    }
+    // final indexFile = File(p.join(nextDir.path, 'index.html'));
+    // if (!await indexFile.exists()) {
+    //   await nextDir.delete(recursive: true);
+    //   throw Exception('释放失败,zip包中没有index.html');
+    // }
 
     await _writeVersionFile(nextDir.path, version);
     _nextVersionReadyController.add(version);
@@ -178,30 +180,33 @@ class H5Offline {
     }
   }
 
-  Future<String> restartServer() async {
-    await stopServer();
-    return await startServer();
-  }
+  // Future<String> restartServer() async {
+  //   await stopServer();
+  //   return await startServer();
+  // }
 
   final serverUrl = ValueNotifier<String>('');
-  Future<void> waitForServerUrl() async {
-    final completer = Completer<void>();
+  Future<bool> waitForServerUrl() async {
+    final completer = Completer<bool>();
     void listener() {
       if (serverUrl.value.isNotEmpty && !completer.isCompleted) {
-        completer.complete();
+        completer.complete(true);
       }
     }
 
     serverUrl.addListener(listener);
     try {
       listener();
-      await completer.future;
+      return await completer.future.timeout(
+        const Duration(seconds: 60),
+        onTimeout: () => false,
+      );
     } finally {
       serverUrl.removeListener(listener);
     }
   }
 
-  Future<String> serveDist(String distPath) async {
+  Future<HttpServer> _serveDist(String distPath) async {
     final staticHandler = createStaticHandler(
       distPath,
       defaultDocument: 'index.html',
@@ -222,9 +227,8 @@ class H5Offline {
       if (response.statusCode == 404) return Response.found('/');
       return response;
     });
-    _server = await serve(handler, InternetAddress.anyIPv4, 0);
-    serverUrl.value = 'http://${_server?.address.host}:${_server?.port}';
-    debugPrint('h5_offline.dart~serverUrl: ${serverUrl.value}');
-    return serverUrl.value;
+    HttpServer ser = await serve(handler, InternetAddress.anyIPv4, 0);
+    debugPrint('h5_offline.dart~_serveDist: ${ser.address.host}:${ser.port}');
+    return ser;
   }
 }

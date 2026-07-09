@@ -189,7 +189,7 @@ class AppApiInterceptor extends Interceptor {
       final resData = response.data as Map<String, dynamic>;
       if (resData['code'] != SimpleResponse.SUCCESS_CODE) {
         if (reqExtra['codeErrorToast'] == true) {
-          ExDialog.showToast(resData['message'] ?? resData['msg'] ?? '错误未知');
+          ExDialog.showToast(resData['message'] ?? '${resData['code']}');
         }
       }
     }
@@ -198,7 +198,9 @@ class AppApiInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     ExDialog.dismiss();
+    debugPrint('app_api.dart~onError: ---------------------------------------');
     debugPrint('app_api.dart~onError: $err');
+    debugPrint('app_api.dart~onError: ---------------------------------------');
     final se = err.simpleException;
     if (err.requestOptions.extra['ignoreException'] == true) {
       final r = Response(data: se.toJson(), requestOptions: err.requestOptions);
