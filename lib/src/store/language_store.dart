@@ -5,7 +5,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../m_utils.dart' show MUtils;
-import '../view/setting_view.dart';
+import '../ext/ex_dialog.dart' show ExDialogLanguage;
+import '../util/http_util.dart' show HttpUtilLanguage;
+import '../view/setting_view.dart' show SettingViewLanguage;
 
 extension LanguageString on String {
   Map<String, String> get _map =>
@@ -39,7 +41,23 @@ class LanguageStore {
       const Locale('zh', 'CN'): {'language.name': '简体中文'},
       const Locale('en', 'US'): {'language.name': 'English'},
     };
+    addLanguageMap({
+      const Locale('zh', 'CN'): {
+        'common.取消': '取消',
+        'common.确认': '确认',
+        'common.正在加载': '正在加载...',
+        'common.完成': '完成',
+      },
+      const Locale('en', 'US'): {
+        'common.取消': 'Cancel',
+        'common.确认': 'Confirm',
+        'common.正在加载': 'Loading...',
+        'common.完成': 'Done',
+      },
+    });
     addLanguageMap(SettingViewLanguage.map);
+    addLanguageMap(HttpUtilLanguage.map);
+    addLanguageMap(ExDialogLanguage.map);
     addLanguageMap(languageMap);
     debugPrint('language_store.dart~_internal: ');
     var baseLanguage = findBaseLanguage();

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 import '../m_utils.dart' show MUtils;
@@ -5,28 +7,27 @@ import '../m_utils.dart' show MUtils;
 class ServerManager {
   ServerManager._();
 
-  static List<Map<String, dynamic>> list = [];
+  static Map<String, Map<String, String>> map = {};
   static String _env = '';
-  static Map<String, dynamic> _info = {};
-  static String get env => _info['env']?.toString() ?? '';
-  static String get apiHost => _info['apiHost']?.toString() ?? '';
-  static String get h5Host => _info['h5Host']?.toString() ?? '';
+  static Map<String, String> _info = {};
+  static String get env => _env;
+  static Set<String> get envKes => _info.keys.toSet();
+  static String? getVal(String key) => _info[key];
+  static String optVal(String key) => _info[key] ?? '';
 
   static void init(
-    List<Map<String, dynamic>> serverList,
+    Map<String, Map<String, String>> serverMap,
     String defaultEnv, [
     VoidCallback? onEnvChange,
   ]) {
-    list = serverList;
-    _env = MUtils.pref.getString('_serverEnv') ?? defaultEnv;
+    map = serverMap;
+    _env = MUtils.pref.getString('serverEnv') ?? defaultEnv;
     if (_env == 'custom') {
-      _info = {
-        'env': 'custom',
-        'apiHost': MUtils.pref.getString('custom_apiHost'),
-        'h5Host': MUtils.pref.getString('custom_h5Host'),
-      };
+      final serverCustomEnv = MUtils.pref.getString('serverCustom') ?? '{}';
+      _info = jsonDecode(serverCustomEnv) as Map<String, String>;
+      map['custom'] = _info;
     } else {
-      _info = list.firstWhere((element) => element['env'] == _env);
+      _info = map[_env]!;
     }
     if (onEnvChange != null) addEnvChangeListener(onEnvChange);
 
@@ -46,13 +47,13 @@ class ServerManager {
   static void clearEnvListeners() => _changeListeners.clear();
 
   /// 保存服务器信息
-  static void saveServerInfo(Map<String, dynamic> val) {
-    MUtils.pref.setString('_serverEnv', val['env']);
+  static void saveServerInfo(String env, Map<String, String> val) {
+    MUtils.pref.setString('serverEnv', env);
+    _env = env;
     _info = val;
-    _env = val['env'];
-    if (val['env'] == 'custom') {
-      MUtils.pref.setString('custom_apiHost', val['apiHost']);
-      MUtils.pref.setString('custom_h5Host', val['h5Host']);
+    if (env == 'custom') {
+      MUtils.pref.setString('serverCustom', jsonEncode(val));
+      map['custom'] = val;
     }
     for (final listener in _changeListeners) {
       listener();

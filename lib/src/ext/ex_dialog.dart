@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
+import '../store/language_store.dart' show LanguageString;
+
 class ExDialog {
   ExDialog._();
   static final TransitionBuilder builder = FlutterSmartDialog.init();
@@ -25,12 +27,24 @@ class ExDialog {
     SmartDialog.showToast(message, alignment: Alignment.topCenter);
   }
 
-  static void showLoading<T>([String message = 'loading...']) {
-    SmartDialog.showLoading(msg: message);
+  static void showLoading([String? message]) {
+    SmartDialog.showLoading(msg: message ?? 'ExDialog.正在加载'.tr);
   }
 
   static Future<void> dismissLoading() async {
     await SmartDialog.dismiss(status: SmartStatus.loading);
+  }
+
+  static void showRequestLoading([String? message]) {
+    SmartDialog.showLoading(msg: message ?? 'ExDialog.正在请求'.tr);
+  }
+
+  static void requestSuccess([String? message]) {
+    SmartDialog.showToast(message ?? 'ExDialog.请求失败'.tr);
+  }
+
+  static void requestFailed([String? message]) {
+    SmartDialog.showToast(message ?? 'ExDialog.请求成功'.tr);
   }
 
   static Future<String?> showDialog(
@@ -225,4 +239,27 @@ class ExDialog {
       buildTextLoading: buildTextLoading,
     );
   }
+}
+
+extension ExDialogLanguage on ExDialog {
+  static final map = {
+    const Locale('zh', 'CN'): {
+      'ExDialog.取消': '取消',
+      'ExDialog.确认': '确认',
+      'ExDialog.正在加载': '正在加载...',
+      'ExDialog.完成': '完成',
+      'ExDialog.正在请求': '正在请求...',
+      'ExDialog.请求失败': '请求失败',
+      'ExDialog.请求成功': '请求成功',
+    },
+    const Locale('en', 'US'): {
+      'ExDialog.取消': 'Cancel',
+      'ExDialog.确认': 'Confirm',
+      'ExDialog.正在加载': 'Loading...',
+      'ExDialog.完成': 'Done',
+      'ExDialog.正在请求': 'Request...',
+      'ExDialog.请求失败': 'Request Failed',
+      'ExDialog.请求成功': 'Request Success',
+    },
+  };
 }

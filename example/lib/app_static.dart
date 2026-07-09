@@ -10,10 +10,6 @@ class AppStatic {
   static const String appStoreId = '';
   // 获取App Store更新信息
   static const String appStoreLookup = 'https://itunes.apple.com/cn/lookup?id=';
-  // 用户协议url
-  static const String agreementUrl = 'https://flutter.cn';
-  // 隐私政策url
-  static const String privacyUrl = 'https://flutter.cn';
   // icp备案号
   static const String icpNumber = 'AAA-BBB-CCC';
   // icp备案号查询链接
@@ -22,24 +18,36 @@ class AppStatic {
   static const String copyrightCode = 'Copyright © 2006-2026 flutter.cn';
 
   /// 服务器列表
-  static const serverList = [
-    {
-      'env': 'prod',
-      'apiHost': 'https://flutter.cn',
+  static const serverMap = {
+    'prod': {
+      'mainApi': 'https://flutter.cn',
+      'subApi': 'https://flutter.cn',
       'h5Host': 'https://flutter.cn',
+      'agreementUrl': 'https://flutter.cn',
+      'privacyUrl': 'https://flutter.cn',
     },
-    {
-      'env': 'test',
-      'apiHost': 'https://flutter.cn',
+    'test': {
+      'mainApi': 'https://flutter.cn',
+      'subApi': 'https://flutter.cn',
       'h5Host': 'https://flutter.cn',
+      'agreementUrl': 'https://flutter.cn',
+      'privacyUrl': 'https://flutter.cn',
     },
-    {
-      'env': 'dev',
-      'apiHost': 'https://flutter.cn',
+    'dev': {
+      'mainApi': 'https://flutter.cn',
+      'subApi': 'https://flutter.cn',
       'h5Host': 'https://flutter.cn',
+      'agreementUrl': 'https://flutter.cn',
+      'privacyUrl': 'https://flutter.cn',
     },
-    {'env': 'custom', 'apiHost': null, 'h5Host': null},
-  ];
+    'custom': {
+      'mainApi': '',
+      'subApi': '',
+      'h5Host': '',
+      'agreementUrl': '',
+      'privacyUrl': '',
+    },
+  };
 
   /// 主题色
   static const primaryColor = Color(0xFF0ea5e9);

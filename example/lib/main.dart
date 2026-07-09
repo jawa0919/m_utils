@@ -22,10 +22,10 @@ void main() async {
 
 Future<void> _initSystem() async {
   ServerManager.init(
-    AppStatic.serverList,
+    AppStatic.serverMap,
     MUtils.isProduct ? 'prod' : 'dev',
     () {
-      AppApi().updateBaseUrl(ServerManager.apiHost);
+      AppApi().updateBaseUrl(ServerManager.optVal('mainApi'));
     },
   );
   ThemeStore.init(AppStatic.colorScheme);

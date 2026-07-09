@@ -24,7 +24,7 @@ class H5Routes {
     Uri uri = Uri.parse(path);
     debugPrint('h5_routes.dart~uri: $uri');
     if (h5Host) {
-      uri = Uri.parse(ServerManager.h5Host + path);
+      uri = Uri.parse(ServerManager.optVal('h5Host') + path);
       debugPrint('h5_routes.dart~h5HostUri: $uri');
     }
     if (token) {

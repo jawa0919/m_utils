@@ -14,7 +14,7 @@ class AppApi {
   late Dio dio;
 
   AppApi._internal() {
-    dio = HttpUtil.create(ServerManager.apiHost);
+    dio = HttpUtil.create(ServerManager.optVal('mainApi'));
     dio.interceptors.add(AppApiInterceptor());
   }
 
@@ -187,8 +187,10 @@ class AppApiInterceptor extends Interceptor {
     if (response.data is Map<String, dynamic>) {
       final reqExtra = response.requestOptions.extra;
       final resData = response.data as Map<String, dynamic>;
-      if (resData['code'] != 200 && reqExtra['codeErrorToast'] == true) {
-        ExDialog.showToast(resData['message'] ?? resData['msg'] ?? '错误未知');
+      if (resData['code'] != SimpleResponse.SUCCESS_CODE) {
+        if (reqExtra['codeErrorToast'] == true) {
+          ExDialog.showToast(resData['message'] ?? resData['msg'] ?? '错误未知');
+        }
       }
     }
   }
@@ -197,7 +199,7 @@ class AppApiInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     ExDialog.dismiss();
     debugPrint('app_api.dart~onError: $err');
-    final se = await HttpUtil.createSimpleException(err);
+    final se = err.simpleException;
     if (err.requestOptions.extra['ignoreException'] == true) {
       final r = Response(data: se.toJson(), requestOptions: err.requestOptions);
       return handler.resolve(r);
