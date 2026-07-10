@@ -14,31 +14,28 @@ class H5Routes {
   /// 是否启用离线路由
   static bool enabledOffline = true;
 
-  /// 主页面
-  static const String home = '/';
+  /// 一些在线h5页面路径
+  static const String homePath = '/';
+  static const String infoPath = '/info';
 
-  /// 格式化链接
-  static String formateUrl(
-    String path, [
-    bool h5Host = true,
-    bool token = true,
-  ]) {
-    Uri uri = Uri.parse(path);
-    debugPrint('h5_routes.dart~uri: $uri');
-    if (h5Host) {
-      uri = Uri.parse(ServerManager.optVal('h5Host') + path);
-      debugPrint('h5_routes.dart~h5HostUri: $uri');
-    }
-    if (token) {
-      uri = uri.replace(
-        queryParameters: {
-          ...uri.queryParameters,
-          'appToken': UserStore.to.token,
-        },
-      );
-    }
-    String url = uri.toString();
-    debugPrint('h5_routes.dart~formateH5Url: $url');
+  ///  url 中添加 token
+  static String urlInsetToken(String url, {String tokenKey = 'appToken'}) {
+    Uri uri = Uri.parse(url);
+    uri = uri.replace(
+      queryParameters: {...uri.queryParameters, tokenKey: UserStore.to.token},
+    );
+    return uri.toString();
+  }
+
+  /// 从 path 中生成 url
+  static String urlFromPath(
+    String path, {
+    bool useToken = true,
+    String tokenKey = 'appToken',
+  }) {
+    Uri uri = Uri.parse(ServerManager.optVal('h5Host') + path);
+    String url = useToken ? urlInsetToken(uri.toString()) : uri.toString();
+    debugPrint('h5_routes.dart~urlFromPath: $url');
     return url;
   }
 
@@ -49,22 +46,24 @@ class H5Routes {
   static String offlineUrl = '';
   static Future<void> initOffline() async {
     debugPrint('h5_routes.dart~initOffline: ${DateTime.now().str}');
-    H5Offline().startServer().then((value) {
-      if (value.isEmpty) {
+    H5Offline().startServer().then((url) {
+      debugPrint('h5_routes.dart~initOffline.startServer: $url');
+      if (url.isEmpty) {
         _checkVersion(() async {
           offlineUrl = await H5Offline().startServer();
           debugPrint('h5_routes.dart~initOffline: $offlineUrl');
         });
         return;
       }
-      offlineUrl = value;
+      offlineUrl = url;
       debugPrint('h5_routes.dart~initOffline: $offlineUrl');
     });
   }
 
   static Future<void> _checkVersion([ValueGetter? callback]) async {
-    debugPrint('h5_routes.dart~checkVersion: ${DateTime.now().str}');
-    SimpleResponse.withMock(
+    debugPrint('h5_routes.dart~_checkVersion: ${DateTime.now().str}');
+    apiRequest(
+      () => CommonApi.findH5Version(),
       AppVersionResp(
         upgradeFlag: 1,
         version: '1.0.0',
@@ -73,7 +72,6 @@ class H5Routes {
             'https://ghfast.top/https://raw.githubusercontent.com/jawa0919/m_utils/main/doc/dist.zip',
         // 'https://fastly.jsdelivr.net/gh/jawa0919/m_utils@main/doc/dist.zip',
       ).toJson(),
-      () => CommonApi.findH5Version(),
     ).then((res) async {
       debugPrint('h5_routes.dart~findH5Version: ${DateTime.now().str}');
       if (!res.success) return;

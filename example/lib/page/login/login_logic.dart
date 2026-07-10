@@ -30,9 +30,10 @@ mixin LoginLogic<T extends StatefulWidget>
 
   /// 0-账号密码登录
   /// 1-手机号验证码登录
-  /// 2-邮箱验证码登录
-  /// 3-扫码登录-todo
-  /// 4-网页跳转登录-todo
+  /// 2-扫码登录-todo
+  /// 3-网页跳转登录-todo
+  /// 98-忘记密码-todo
+  /// 99-注册账号-todo
   late var loginType = createSignal(0);
 
   var usernameCt = TextEditingController(text: '');
@@ -56,6 +57,7 @@ mixin LoginLogic<T extends StatefulWidget>
   var codeFN = FocusNode();
   var codeError = signal('');
 
+  late var isRememberMe = createSignal(true);
   late var isAgreed = createSignal(true);
 
   void onPageCreated() {
@@ -67,6 +69,9 @@ mixin LoginLogic<T extends StatefulWidget>
     if (!MUtils.isProduct) {
       showDebugBtn(context);
     }
+    Future.delayed(const Duration(milliseconds: 300), () {
+      usernameFN.requestFocus();
+    });
   }
 
   void onPageDestroyed(BuildContext context) {}
@@ -87,7 +92,7 @@ mixin LoginLogic<T extends StatefulWidget>
     if (timerCount.value > 0) return;
     debugPrint('login_logic.dart~trySendCode: $phone');
     ExDialog.showLoading('正在请求验证码');
-    SimpleResponse.withMock({}, () => UserApi.sendCode(phone)).then((r) {
+    apiRequest(() => UserApi.sendCode(phone), {}, useMockData: true).then((r) {
       ExDialog.dismissLoading();
       if (!r.success) return;
       ExDialog.showToast('发送验证码成功');
@@ -166,9 +171,10 @@ mixin LoginLogic<T extends StatefulWidget>
     }
     debugPrint('login_logic.dart~tryLoginPassword: $username/$password');
     ExDialog.showLoading('正在登录');
-    SimpleResponse.withMock(
-      LoginUserResp(token: 'login123456').toJson(),
+    apiRequest(
       () => UserApi.login(username, password),
+      LoginUserResp(token: 'login123456').toJson(),
+      useMockData: true,
     ).then((r) async {
       await ExDialog.dismissLoading();
       if (!r.success) return;
@@ -197,9 +203,10 @@ mixin LoginLogic<T extends StatefulWidget>
     }
     debugPrint('login_logic.dart~tryLoginCode: $phone/$code');
     ExDialog.showLoading('正在登录');
-    SimpleResponse.withMock(
-      LoginUserResp(token: 'loginPhoneCode123456').toJson(),
+    apiRequest(
       () => UserApi.loginCode(phone, code),
+      LoginUserResp(token: 'loginPhoneCode123456').toJson(),
+      useMockData: true,
     ).then((r) async {
       await ExDialog.dismissLoading();
       if (!r.success) return;
@@ -224,13 +231,14 @@ mixin LoginLogic<T extends StatefulWidget>
     passwordObscure.value = !passwordObscure.value;
   }
 
+  void toggleRememberMe() {
+    isRememberMe.value = !isRememberMe.value;
+  }
+
   void toggleAgreed() {
     isAgreed.value = !isAgreed.value;
   }
 
-  void navRegister() {
-    // AppRoutes.push(RegisterPage.routeName);
-  }
   void navDebugPage() {
     SettingView.start(context);
   }

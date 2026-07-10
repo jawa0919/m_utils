@@ -18,14 +18,6 @@ class UserStore {
 
   final _profile = signal<LoginUserResp>(LoginUserResp());
   late final profile = computed(() => _profile.value);
-  late final id = computed(() => _profile.value.id ?? '');
-  late final email = computed(() => _profile.value.email ?? '');
-  late final phone = computed(() => _profile.value.phone ?? '');
-  late final surname = computed(() => _profile.value.surname ?? '');
-  late final name = computed(() => _profile.value.name ?? '');
-  late final nickName = computed(() => '${surname.value}${name.value}');
-  late final headImage = computed(() => _profile.value.avatar ?? '');
-  late final level = computed(() => _profile.value.level ?? 0);
   late final lastLoginUser = signal('');
 
   UserStore._internal() {
@@ -41,17 +33,18 @@ class UserStore {
     SettingView.onAction(SettingAction.logout, onLogout);
   }
 
-  Future<void> saveToken(String val, [bool updateProfile = true]) async {
+  Future<void> saveToken(
+    String val, [
+    bool rememberUser = true,
+    bool updateProfile = false,
+  ]) async {
     if (token != val) {
-      await MUtils.pref.setString('token', val);
       token = val;
       H5Logic().postCustomEvent('appTokenUpdate', {'token': val});
+      if (rememberUser) await MUtils.pref.setString('token', val);
     }
     if (updateProfile) {
-      var r = await SimpleResponse.withMock(
-        LoginUserResp().toJson(),
-        () => UserApi.info(),
-      );
+      var r = await apiRequest(() => UserApi.info(), LoginUserResp().toJson());
       if (!r.success) return;
       final resp = LoginUserResp.fromJson(r.data);
       await saveProfile(resp);
@@ -94,7 +87,7 @@ class UserStore {
       'user_store.dart~onLogout: '
       'removeProfile: $removeProfile toLoginPage: $toLoginPage tips: $tips',
     );
-    await SimpleResponse.withMock({}, () => UserApi.logout());
+    await apiRequest(() => UserApi.logout(), {});
     await clearToken();
     if (removeProfile) await clearProfile();
     if (toLoginPage) {

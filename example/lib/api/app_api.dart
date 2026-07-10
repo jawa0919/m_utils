@@ -161,12 +161,38 @@ class AppApi {
     );
     return response.data;
   }
+
+  Future<T?> customRequest<T>(
+    BaseOptions? baseOptions,
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    bool autoToken = true,
+    bool codeErrorToast = true,
+  }) async {
+    Options requestOptions = options ?? Options();
+    requestOptions.extra ??= {};
+    requestOptions.extra?.addAll({
+      'autoToken': autoToken,
+      'codeErrorToast': codeErrorToast,
+    });
+    var response = await dio
+        .clone(options: baseOptions)
+        .request<T>(
+          path,
+          data: data,
+          queryParameters: queryParameters,
+          options: requestOptions,
+        );
+    return response.data;
+  }
 }
 
 class AppApiInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    if (UserStore.to.hasToken == true || options.extra['autoToken'] == true) {
+    if (options.extra['autoToken'] == true) {
       options.headers.update(
         'Authorization',
         (value) => UserStore.to.token,
@@ -256,17 +282,20 @@ class SimpleResponse<T> {
     this.message = 'success',
     this.code = SUCCESS_CODE,
   });
+}
 
-  static const isUseMock = !bool.fromEnvironment('dart.vm.product') && true;
-  static Future<SimpleResponse<T>> withMock<T>(
-    T? data,
-    Future<SimpleResponse<T>> Function() realRequest,
-  ) async {
-    if (!isUseMock) return await realRequest();
-    debugPrint('withMockSuccess: --------------------------------------------');
-    debugPrint('withMockSuccess: $data');
-    debugPrint('withMockSuccess: --------------------------------------------');
+Future<SimpleResponse<T>> apiRequest<T>(
+  Future<SimpleResponse<T>> Function() realRequest,
+  T? mockData, {
+  bool useMockData = false,
+}) async {
+  if (bool.fromEnvironment('dart.vm.product')) return await realRequest();
+  if (useMockData) {
+    debugPrint('useMockData: --------------------------------------------');
+    debugPrint('useMockData: $mockData');
+    debugPrint('useMockData: --------------------------------------------');
     await Future.delayed(const Duration(seconds: 1));
-    return SimpleResponse.success(data);
+    return SimpleResponse.success(mockData);
   }
+  return await realRequest();
 }

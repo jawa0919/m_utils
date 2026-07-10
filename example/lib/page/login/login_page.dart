@@ -125,15 +125,15 @@ class _LoginPageState extends State<LoginPage>
               controller: usernameCt,
               focusNode: usernameFN,
               textAlign: TextAlign.start,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.url,
               showCursor: true,
               cursorWidth: 2,
               cursorHeight: 24,
               maxLines: 1,
-              maxLength: 11,
+              maxLength: 30,
               inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(11),
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9@_.-]')),
+                LengthLimitingTextInputFormatter(30),
               ],
               textInputAction: TextInputAction.next,
               // onSubmitted: trySendCode,
@@ -146,7 +146,6 @@ class _LoginPageState extends State<LoginPage>
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                   borderSide: BorderSide(
                     color: ThemeStore.color.outlineVariant,
-                    width: 1,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
@@ -224,7 +223,6 @@ class _LoginPageState extends State<LoginPage>
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                   borderSide: BorderSide(
                     color: ThemeStore.color.outlineVariant,
-                    width: 1,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
@@ -542,12 +540,16 @@ class _LoginPageState extends State<LoginPage>
               height: 22 / 14,
               color: ThemeStore.color.primary,
             ),
-          ).onTap(navRegister),
+          ).onTap(() {
+            loginType.value = 99;
+          }),
           Icon(
             Icons.keyboard_double_arrow_right_rounded,
             size: 22,
             color: ThemeStore.color.primary,
-          ).onTap(navRegister),
+          ).onTap(() {
+            loginType.value = 99;
+          }),
         ],
       ),
     );

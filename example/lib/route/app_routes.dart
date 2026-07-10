@@ -56,9 +56,11 @@ class AppRoutes {
         name: H5Page.routeName,
         builder: (context, state) {
           if (H5Routes.offlineUrl.isNotEmpty) {
-            return H5Page(url: H5Routes.offlineUrl);
+            String url = H5Routes.urlInsetToken(H5Routes.offlineUrl);
+            return H5Page(url: url);
           }
-          String url = MapDynamic.val(state.extra, 'url') ?? H5Routes.home;
+          String url = MapDynamic.val(state.extra, 'url') ?? H5Routes.homePath;
+          url = H5Routes.urlInsetToken(url);
           return H5Page(url: url);
         },
       ),
