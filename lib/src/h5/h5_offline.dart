@@ -118,18 +118,14 @@ class H5Offline {
     return '';
   }
 
-  final _nextVersionReadyController = StreamController<String>.broadcast();
-  void onNextVersionReadyListener(void Function(String version) callback) {
-    _nextVersionReadyController.stream.listen(callback);
-  }
-
   Future<String> startServer() async {
     debugPrint('h5_offline.dart~startServer: ');
     await _initPath();
     await _applyUpdateIfNeeded();
     final currentDir = Directory(p.join(_homePath, 'current'));
     if (!await currentDir.exists()) {
-      // throw Exception('current目录不存在');
+      // throw Exception('error.current目录不存在');
+      debugPrint('h5_offline.dart~startServer: error.current目录不存在');
       return '';
     }
     _server = await _serveDist(currentDir.path);
@@ -160,14 +156,15 @@ class H5Offline {
     await nextDir.create(recursive: true);
     await _extractZip(zipPath, nextDir.path);
 
-    // final indexFile = File(p.join(nextDir.path, 'index.html'));
-    // if (!await indexFile.exists()) {
-    //   await nextDir.delete(recursive: true);
-    //   throw Exception('释放失败,zip包中没有index.html');
-    // }
+    final indexFile = File(p.join(nextDir.path, 'index.html'));
+    if (!await indexFile.exists()) {
+      await nextDir.delete(recursive: true);
+      // throw Exception('error.zip包中没有index.html');
+      debugPrint('h5_offline.dart~releaseNextDist: error.zip包中没有index.html');
+      return false;
+    }
 
     await _writeVersionFile(nextDir.path, version);
-    _nextVersionReadyController.add(version);
     return true;
   }
 
@@ -176,7 +173,6 @@ class H5Offline {
       await _server!.close(force: true);
       _server = null;
       serverUrl.value = '';
-      _nextVersionReadyController.close();
     }
   }
 
