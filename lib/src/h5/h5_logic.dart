@@ -38,6 +38,8 @@ class H5Logic {
   void onPageDestroyed(BuildContext context) {
     debugPrint('h5_logic.dart~onPageDestroyed: ');
     keyboardSubscription.cancel();
+    webController?.dispose();
+    webController = null;
   }
 
   late StreamSubscription<bool> keyboardSubscription;
