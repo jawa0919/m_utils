@@ -16,15 +16,49 @@
 <body>
     <div class="container">
         <h1>hello world</h1>
-        <a href="https://daily.zhihu.com">跳转知乎日报</a>
-        <a href="https://flutter.cn">跳转FlutterCN </a>
         <a href="https://cn.bing.com/">跳转bing</a>
+        <a href="https://flutter.cn">跳转FlutterCN</a>
+        <div class="info-section">
+            <div class="info-title">当前页面URL:</div>
+            <div id="url-info" class="info-content"></div>
+            <div id="user-agent" class="info-content"></div>
+            <div id="user-token" class="info-content"></div>
+            <div id="screen-info" class="info-content"></div>
+        </div>
+        <div class="info-section">
+            <div class="info-title">web通用上传图片文件:</div>
+            <input type="file" id="imageInput" accept="image/*">
+            <img id="preview" src="#" alt="预览" style="display:none; max-width: 120px;">
+        </div>
+        <div class="info-section">
+            <div class="info-title">相册选图:</div>
+            <div id="image-info" class="info-content"></div>
+            <button onclick="chooseAlbumImage()">相册选图</button>
+        </div>
+        <div class="info-section">
+            <div class="info-title">网络图片:</div>
+            <img loading src="https://fastly.jsdelivr.net/npm/@vant/assets/logo.png">
+            <button onclick="saveNetImageToPhotosAlbum()">保存网络图片</button>
+        </div>
+        <div class="info-section">
+            <div class="info-title">网络视频:</div>
+            <video controls>
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+            </video>
+            <button onclick="saveNetMediaToPhotosAlbum()">保存网络视频</button>
+        </div>
+        <div class="info-section">
+            <div class="info-title">扫描二维码:</div>
+            <div id="qr-info" class="info-content"></div>
+            <button onclick="scanQrCode()">扫描二维码</button>
+        </div>
     </div>
     <script>eruda.init();</script>
     <script>
+        const { createApp, ref } = Vue
         // 在 #app 标签下渲染一个按钮组件
-        // const app = Vue.createApp({});
-        // app.use(vant);
+        const app = Vue.createApp({});
+        app.use(vant);
         // // 通过 CDN 引入时不会自动注册 Lazyload 组件
         // // 可以通过下面的方式手动注册
         // app.use(vant.Lazyload);
@@ -33,6 +67,136 @@
         // vant.showToast('提示');
 
         // app.mount('#app');
+    </script>
+    <script>
+        // 页面加载完成后自动刷新信息
+        window.addEventListener('load', function () {
+            console.log('debug.html~load');
+            refreshInfo();
+        });
+        // 页面加载完成后自动刷新信息
+        var isFlutterInAppWebViewReady = false;
+        window.addEventListener('flutterInAppWebViewPlatformReady', function () {
+            console.log('debug.html~flutterInAppWebViewPlatformReady');
+            isFlutterInAppWebViewReady = true;
+            refreshInfo();
+        });
+        document.getElementById('imageInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById('preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        function refreshInfo() {
+            document.getElementById('url-info').textContent = window.location.href;
+            document.getElementById('user-agent').textContent = navigator.userAgent;
+            var userToken = "";
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('appToken')) userToken = urlParams.get('appToken');
+            if (urlParams.has('token') && userToken == "") userToken = urlParams.get('token');
+            if (urlParams.has('tk') && userToken == "") userToken = urlParams.get('tk');
+            document.getElementById('user-token').textContent = userToken;
+            // 屏幕信息
+            getAppScreenInfo()
+            // 监听键盘可见性变化
+            window.addEventListener('appKeyboardVisibility', function (event) {
+                event.preventDefault();
+                console.log('debug.html~appKeyboardVisibility' + event.detail.visible);
+            });
+        }
+        function getAppScreenInfo() {
+            if (!isFlutterInAppWebViewReady) return;
+            window['flutter_inappwebview'].callHandler('appScreenInfo').then(function (info) {
+                console.log('debug.html~appScreenInfo', JSON.stringify(info));
+                const screenInfo = `
+                    深色模式: ${info.isDark}
+                    屏幕尺寸: ${info.displayWidth} x ${info.displayHeight}
+                    视窗尺寸: ${info.windowWidth} x ${info.windowHeight}
+                    像素比: ${info.devicePixelRatio}
+                    左边距: ${info.viewPaddingRight || 0}px
+                    上边距: ${info.viewPaddingTop || 0}px
+                    右边距: ${info.viewPaddingLeft || 0}px
+                    下边距: ${info.viewPaddingBottom || 0}px
+                    全屏: ${info.isFullScreen}
+                `;
+                document.getElementById('screen-info').textContent = screenInfo;
+            });
+            window.addEventListener('appScreenInfoChange', function (event) {
+                var info = event.detail;
+                console.log('debug.html~appScreenInfoChange', JSON.stringify(info));
+                const screenInfo = `
+                    深色模式: ${info.isDark}
+                    屏幕尺寸: ${info.displayWidth} x ${info.displayHeight}
+                    视窗尺寸: ${info.windowWidth} x ${info.windowHeight}
+                    像素比: ${info.devicePixelRatio}
+                    左边距: ${info.viewPaddingRight || 0}px
+                    上边距: ${info.viewPaddingTop || 0}px
+                    右边距: ${info.viewPaddingLeft || 0}px
+                    下边距: ${info.viewPaddingBottom || 0}px
+                    全屏: ${info.isFullScreen}
+                `;
+                document.getElementById('screen-info').textContent = screenInfo;
+            }, false);
+        }
+
+        function chooseAlbumImage() {
+            if (!isFlutterInAppWebViewReady) return;
+            window['flutter_inappwebview'].callHandler('chooseAlbumImage').then(async (result) => {
+                var path = result.path;
+                var name = result.name;
+                var length = result.length;
+                var mimeType = result.mimeType;
+                console.log('debug.html~chooseAlbumImage', JSON.stringify({ path, name, length, mimeType }));
+                document.getElementById('image-info').textContent = JSON.stringify({ path, name, length, mimeType });
+                var bytes = result.bytes;
+                console.log('debug.html~chooseAlbumImage', bytes.length);
+                const blob = new Blob([new Uint8Array(bytes)], { type: mimeType });
+                const file = new File([blob], name, { type: blob.type });
+                console.log('debug.html~chooseAlbumImage-file', file);
+                console.log('debug.html~chooseAlbumImage-file-name', file.name);
+                console.log('debug.html~chooseAlbumImage-file-size', file.size);
+                console.log('debug.html~chooseAlbumImage-file-type', file.type);
+                const formData = new FormData();
+                formData.append('files', file);
+                formData.append('metadata', JSON.stringify({
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                }));
+                console.log('debug.html~chooseAlbumImage', formData);
+            });
+        }
+        function saveNetImageToPhotosAlbum() {
+            if (!isFlutterInAppWebViewReady) return;
+            var url = "https://fastly.jsdelivr.net/npm/@vant/assets/logo.png";
+            var name = "logo_" + Date.now() + ".png";
+            window['flutter_inappwebview'].callHandler('saveNetImageToPhotosAlbum', url, name).then(function (result) {
+                console.log('debug.html~saveNetImageToPhotosAlbum', JSON.stringify(result));
+                window.alert('保存图片成功');
+            });
+        }
+        function saveNetMediaToPhotosAlbum() {
+            if (!isFlutterInAppWebViewReady) return;
+            var url = "https://www.w3schools.com/html/mov_bbb.mp4";
+            var name = "mov_bbb_" + Date.now() + ".mp4";
+            window['flutter_inappwebview'].callHandler('saveNetMediaToPhotosAlbum', url, name).then(function (result) {
+                console.log('debug.html~saveNetMediaToPhotosAlbum', JSON.stringify(result));
+                window.alert('保存媒体成功');
+            });
+        }
+        function scanQrCode() {
+            if (!isFlutterInAppWebViewReady) return;
+            window['flutter_inappwebview'].callHandler('scanQrCode').then(function (result) {
+                console.log('debug.html~scanQrCode', JSON.stringify(result));
+                document.getElementById('qr-info').textContent = result.resultStr;
+            });
+        }
     </script>
 </body>
 

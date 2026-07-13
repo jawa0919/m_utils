@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:easy_debounce/easy_debounce.dart';
@@ -13,6 +14,7 @@ import '../m_utils.dart' show MUtils;
 import '../ext/ex_object.dart';
 import '../store/theme_store.dart';
 import '../util/media_util.dart';
+import '../view/qr_scan_view.dart';
 
 class H5Logic {
   static final H5Logic to = _instance;
@@ -152,12 +154,24 @@ class H5Logic {
         };
       },
     );
+    webController?.addJavaScriptHandler(
+      handlerName: 'scanQrCode',
+      callback: (List<dynamic> arguments) async {
+        if (attachmentContext == null) return {};
+        var resultStr = await Navigator.push(
+          attachmentContext!,
+          MaterialPageRoute(builder: (context) => const QrScanView()),
+        );
+        return {'resultStr': resultStr};
+      },
+    );
   }
 
   Map<String, dynamic> appScreenInfoChange() {
     var screenInfo = {
       'isDark': ThemeStore.to.isDark.value,
       'displayHeight': MUtils.displayHeight,
+      'displayWidth': MUtils.displayWidth,
       'windowWidth': MUtils.windowWidth,
       'windowHeight': MUtils.windowHeight,
       'devicePixelRatio': MUtils.devicePixelRatio,
