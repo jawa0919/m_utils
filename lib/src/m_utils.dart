@@ -44,7 +44,7 @@ class MUtils {
   static String get packageVersionCode => _pMap?.buildNumber ?? '';
   static String get packageSignature => _pMap?.buildSignature ?? '';
   static String get packageUserAgent =>
-      '$packageId($packageVersion;$packageVersionCode)';
+      '$packageId/$packageVersion($packageVersionCode)';
 
   // 屏幕信息
   static final Map<String, dynamic> _sMap = {};
