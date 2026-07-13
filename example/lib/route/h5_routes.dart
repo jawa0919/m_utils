@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
-
 import '../app_import.dart';
 import '../dto/app_version_resp.dart';
 
@@ -60,7 +58,7 @@ class H5Routes {
     });
   }
 
-  static Future<void> _checkVersion([ValueGetter? callback]) async {
+  static Future<void> _checkVersion([void Function()? callback]) async {
     debugPrint('h5_routes.dart~_checkVersion: ${DateTime.now().str}');
     apiRequest(
       () => CommonApi.findH5Version(),

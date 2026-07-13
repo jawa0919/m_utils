@@ -28,7 +28,7 @@ class UserStore {
     lastLoginUser.value = MUtils.pref.getString('lastLoginUser') ?? '';
     H5Logic().setupHandler('userLogout', (arguments) async {
       String tips = ListDynamic.val(arguments, 0) ?? '';
-      offAndToLoginPage(tips);
+      onLogout(tips: tips);
     });
     SettingView.onAction(SettingAction.logout, onLogout);
   }

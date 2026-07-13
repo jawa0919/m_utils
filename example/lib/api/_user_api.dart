@@ -77,11 +77,15 @@ class UserApi {
     return SimpleResponse.fromJson(dataRes);
   }
 
-  /// 修改账户信息
-  static Future<SimpleResponse> updateAccount(String code, String phone) async {
+  /// 修改账户信息-手机号、邮箱互相验证修改
+  static Future<SimpleResponse> updateAccount(
+    String code,
+    String phone,
+    String email,
+  ) async {
     var dataRes = await AppApi().post(
       '/api/customer/updateAccount ',
-      data: {'phone': phone, 'code': code},
+      data: {'phone': phone, 'code': code, 'email': email},
     );
     return SimpleResponse.fromJson(dataRes);
   }

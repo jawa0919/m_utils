@@ -25,11 +25,6 @@ class AppRoutes {
           return null;
         },
       ),
-      // GoRoute(
-      //   path: RegisterPage.routeName,
-      //   name: RegisterPage.routeName,
-      //   builder: (context, state) => RegisterPage(),
-      // ),
       GoRoute(
         path: HomePage.routeName,
         name: HomePage.routeName,
