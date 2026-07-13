@@ -129,8 +129,7 @@ class H5Offline {
       return '';
     }
     _server = await _serveDist(currentDir.path);
-    serverUrl.value = 'http://${_server?.address.host}:${_server?.port}';
-    return serverUrl.value;
+    return 'http://${_server?.address.host}:${_server?.port}';
   }
 
   Future<void> _applyUpdateIfNeeded() async {
@@ -172,33 +171,6 @@ class H5Offline {
     if (_server != null) {
       await _server!.close(force: true);
       _server = null;
-      serverUrl.value = '';
-    }
-  }
-
-  // Future<String> restartServer() async {
-  //   await stopServer();
-  //   return await startServer();
-  // }
-
-  final serverUrl = ValueNotifier<String>('');
-  Future<bool> waitForServerUrl() async {
-    final completer = Completer<bool>();
-    void listener() {
-      if (serverUrl.value.isNotEmpty && !completer.isCompleted) {
-        completer.complete(true);
-      }
-    }
-
-    serverUrl.addListener(listener);
-    try {
-      listener();
-      return await completer.future.timeout(
-        const Duration(seconds: 60),
-        onTimeout: () => false,
-      );
-    } finally {
-      serverUrl.removeListener(listener);
     }
   }
 

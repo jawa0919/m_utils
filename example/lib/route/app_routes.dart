@@ -32,8 +32,9 @@ class AppRoutes {
         redirect: (context, state) async {
           if (H5Routes.enabled) {
             if (H5Routes.enabledOffline) {
-              ExDialog.showLoading('正在初始化...');
-              await H5Offline().waitForServerUrl();
+              ExDialog.showLoading();
+              await H5Routes.updateCompleter?.future ?? Future.value(true);
+              await H5Routes.restartServer();
               ExDialog.dismissLoading();
             }
             return H5Page.routeName;
@@ -50,9 +51,11 @@ class AppRoutes {
         path: H5Page.routeName,
         name: H5Page.routeName,
         builder: (context, state) {
-          if (H5Routes.offlineUrl.isNotEmpty) {
-            String url = H5Routes.urlInsetToken(H5Routes.offlineUrl);
-            return H5Page(url: url);
+          if (H5Routes.enabledOffline) {
+            if (H5Routes.offlineUrl.isNotEmpty) {
+              String url = H5Routes.urlInsetToken(H5Routes.offlineUrl);
+              return H5Page(url: url);
+            }
           }
           String url = MapDynamic.val(state.extra, 'url') ?? H5Routes.homePath;
           url = H5Routes.urlInsetToken(url);
@@ -110,11 +113,13 @@ class AppRoutes {
 }
 
 class RouteErrorPage extends StatelessWidget {
-  const RouteErrorPage({super.key});
+  const RouteErrorPage({super.key, this.error});
+
+  final String? error;
 
   @override
   Widget build(BuildContext context) {
     final state = GoRouterState.of(context);
-    return Scaffold(body: Center(child: Text(state.error.toString())));
+    return Scaffold(body: Center(child: Text(error ?? state.error.toString())));
   }
 }

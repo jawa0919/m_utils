@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import '../app_import.dart';
@@ -41,24 +42,15 @@ class H5Routes {
     return v.split('.').map((r) => r.padLeft(5, '0')).join().toInt();
   }
 
+  static Completer<bool>? updateCompleter;
   static String offlineUrl = '';
-  static Future<void> initOffline() async {
-    debugPrint('h5_routes.dart~initOffline: ${DateTime.now().str}');
-    H5Offline().startServer().then((url) {
-      debugPrint('h5_routes.dart~initOffline.startServer: $url');
-      if (url.isEmpty) {
-        _checkVersion(() async {
-          offlineUrl = await H5Offline().startServer();
-          debugPrint('h5_routes.dart~initOffline: $offlineUrl');
-        });
-        return;
-      }
-      offlineUrl = url;
-      debugPrint('h5_routes.dart~initOffline: $offlineUrl');
-    });
+  static Future<String> restartServer() async {
+    await H5Offline().stopServer();
+    offlineUrl = await H5Offline().startServer();
+    return offlineUrl;
   }
 
-  static Future<void> _checkVersion([void Function()? callback]) async {
+  static Future<void> checkVersion([void Function()? callback]) async {
     debugPrint('h5_routes.dart~_checkVersion: ${DateTime.now().str}');
     apiRequest(
       () => CommonApi.findH5Version(),
@@ -70,6 +62,7 @@ class H5Routes {
             'https://ghfast.top/https://raw.githubusercontent.com/jawa0919/m_utils/main/doc/dist.zip',
         // 'https://fastly.jsdelivr.net/gh/jawa0919/m_utils@main/doc/dist.zip',
       ).toJson(),
+      useMockData: true,
     ).then((res) async {
       debugPrint('h5_routes.dart~findH5Version: ${DateTime.now().str}');
       if (!res.success) return;
@@ -84,6 +77,7 @@ class H5Routes {
         /// 下一个版本, 无需下载
       } else if (versionInt(remoteVersion) > versionInt(currentVersion)) {
         debugPrint('h5_routes.dart~remoteVersion: $remoteVersion');
+        updateCompleter = Completer<bool>();
         final versionDirectory = Directory.systemTemp;
         final fileName = r.storagePath?.split('/').last;
         final zipFile = File('${versionDirectory.path}/$fileName');
@@ -92,12 +86,17 @@ class H5Routes {
           debugPrint('h5_routes.dart~downloadFile: ${DateTime.now().str}');
           await H5Offline().releaseNextDist(zipFile.path, r.version!);
           debugPrint('h5_routes.dart~releaseNextDist: ${DateTime.now().str}');
+          updateCompleter?.complete(true);
+          updateCompleter = null;
           callback?.call();
         });
       }
     });
 
     /// 每10分钟轮询检查版本
-    await Future.delayed(const Duration(minutes: 10), () => _checkVersion());
+    await Future.delayed(
+      const Duration(minutes: 10),
+      () => checkVersion(callback),
+    );
   }
 }

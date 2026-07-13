@@ -31,7 +31,7 @@ Future<void> _initSystem() async {
   ThemeStore.init(AppStatic.colorScheme);
   LanguageStore.init();
   AppRoutes.setPageLanguage();
-  H5Routes.initOffline();
+  H5Routes.checkVersion();
   if (MUtils.isMobile) {
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     // await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
