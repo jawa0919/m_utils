@@ -32,10 +32,12 @@ class AppRoutes {
         redirect: (context, state) async {
           if (H5Routes.enabled) {
             if (H5Routes.enabledOffline) {
-              ExDialog.showLoading();
-              await H5Routes.updateCompleter?.future ?? Future.value(true);
+              if (H5Routes.updateCompleter?.future != null) {
+                ExDialog.showLoading();
+                await H5Routes.updateCompleter?.future;
+                ExDialog.dismissLoading();
+              }
               await H5Routes.restartServer();
-              ExDialog.dismissLoading();
             }
             return H5Page.routeName;
           }
