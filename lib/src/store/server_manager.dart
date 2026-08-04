@@ -20,11 +20,11 @@ class ServerManager {
     String defaultEnv, [
     VoidCallback? onEnvChange,
   ]) {
-    map = serverMap;
+    map = Map.from(serverMap);
     _env = MUtils.pref.getString('serverEnv') ?? defaultEnv;
     if (_env == 'custom') {
       final serverCustomEnv = MUtils.pref.getString('serverCustom') ?? '{}';
-      _info = jsonDecode(serverCustomEnv) as Map<String, String>;
+      _info = jsonDecode(serverCustomEnv).cast<String, String>();
       map['custom'] = _info;
     } else {
       _info = map[_env]!;
