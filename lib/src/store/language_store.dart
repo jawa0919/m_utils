@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart' show PlatformDispatcher;
-import 'package:flutter/widgets.dart';
+import 'package:material_ui/material_ui.dart';
 
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../m_utils.dart' show MUtils;
@@ -95,9 +94,8 @@ class LanguageStore {
   }
 
   final List<LocalizationsDelegate> localizationsDelegates = [
+    DefaultWidgetsLocalizations.delegate,
     GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
   ];
   final _languageIndex = signal(0);
   late final locale = computed(() => supportedLocales[_languageIndex.value]);

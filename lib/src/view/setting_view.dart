@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
+import 'package:material_ui/material_ui.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../debug/debug_page.dart';
@@ -155,9 +153,9 @@ class _SettingViewState extends State<SettingView> {
                       break;
                   }
 
-                  return CupertinoListTile(
+                  return ListTile(
                     title: Text('SettingView.主题模式'.tr),
-                    additionalInfo: Text(
+                    subtitle: Text(
                       themeText,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
@@ -169,9 +167,9 @@ class _SettingViewState extends State<SettingView> {
                 }),
 
                 Watch((c) {
-                  return CupertinoListTile(
+                  return ListTile(
                     title: Text('SettingView.语言'.tr),
-                    additionalInfo: Text(
+                    subtitle: Text(
                       'language.name'.tr,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
@@ -188,13 +186,13 @@ class _SettingViewState extends State<SettingView> {
             _buildSettingSection(
               title: 'SettingView.账户设置'.tr,
               children: [
-                CupertinoListTile(
+                ListTile(
                   title: Text('SettingView.账号管理'.tr),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () =>
                       SettingView._invoke(SettingAction.accountManager),
                 ),
-                CupertinoListTile(
+                ListTile(
                   title: Text('SettingView.应用权限'.tr),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () =>
@@ -207,22 +205,22 @@ class _SettingViewState extends State<SettingView> {
             _buildSettingSection(
               title: 'SettingView.关于应用'.tr,
               children: [
-                CupertinoListTile(
+                ListTile(
                   title: Text('SettingView.检查更新'.tr),
-                  additionalInfo: Text(
+                  subtitle: Text(
                     'v${MUtils.packageVersion}(${MUtils.packageVersionCode})',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => SettingView._invoke(SettingAction.checkUpdate),
                 ),
-                CupertinoListTile(
+                ListTile(
                   title: Text('SettingView.服务协议'.tr),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () =>
                       SettingView._invoke(SettingAction.serviceAgreement),
                 ),
-                CupertinoListTile(
+                ListTile(
                   title: Text('SettingView.关于'.tr),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => SettingView._invoke(SettingAction.about),

@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
+import 'package:material_ui/material_ui.dart';
 
 class QrScanView extends StatefulWidget {
   const QrScanView({super.key});
